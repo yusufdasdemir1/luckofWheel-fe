@@ -1,0 +1,15 @@
+** Bence kaydi herkese acik yap. Herkes kayit olsun. 
+Ama onay fieldi ekle. kisiden odeme alirsan onayi ac kullansin.
+
+
+/me icinde ki company icinde bana donmeyen fieldlar
+
+- is_show_wheel
+- show_before_meeting
+- spin_cooldown_hours
+
+comapny icin googlemaps harita embed kodu eklenecek bir field'a ihtiyac var. bu fieldin tipi text olcak.
+kisi harida embed kodunu eklicek, randevu olsutururken altta maps'den konumunu da gostercez.
+
+
+ayrica public bir berberleri listeleyen bir endpoint lazim.
