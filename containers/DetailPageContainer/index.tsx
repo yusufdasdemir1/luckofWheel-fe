@@ -29,10 +29,10 @@ const DetailPageContainer = ({
     'before'
   );
   const [data, setData] = useState({
-    name: 'nazif can',
-    surname: 'durgut',
-    phone: '05370281404',
-    email: 'nazifcandurgt@gmail.com',
+    name: '',
+    surname: '',
+    phone: '',
+    email: '',
   });
   const [earnedGift, setEarnedGift] = useState<any>(null);
   const [meetData, setMeetData] = useState({
@@ -107,8 +107,6 @@ const DetailPageContainer = ({
     }
 
     setMode('success');
-
-    console.log({ res });
 
     addAlert({
       id: Math.random().toString(36).substring(2, 9),

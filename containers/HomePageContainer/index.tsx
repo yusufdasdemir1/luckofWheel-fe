@@ -43,7 +43,6 @@ const WHY_CHOOSE_US = [
 ];
 
 const HomePageContainer = ({ list = [] }: HomePageContainerProps) => {
-  console.log('xxxxx', list);
   return (
     <>
       <div className="w-full py-20 bg-slate-50 border-b border-slate-200 min-h-[350px] flex items-center justify-center">

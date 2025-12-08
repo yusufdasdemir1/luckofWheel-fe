@@ -14,8 +14,6 @@ export const generateMetadata = () => {
 const Home = async () => {
   const [err, result] = await fetchPublicCompanies();
 
-  console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxx', { err, result });
-
   return <HomePageContainer list={!err ? result : []} />;
 };
 
