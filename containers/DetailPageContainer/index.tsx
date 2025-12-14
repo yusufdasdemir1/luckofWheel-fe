@@ -1,6 +1,8 @@
 'use client';
 import Button from '@/components/panel/Button';
 import Input from '@/components/panel/Input';
+import Select from '@/components/panel/Select';
+import Textarea from '@/components/panel/Textarea';
 import Wheel2 from '@/components/Wheel2';
 import { createMeeting, registerByCompanySlug } from '@/services/publicService';
 import { useAlertStore } from '@/stores/alertStore';
@@ -38,6 +40,7 @@ const DetailPageContainer = ({
   const [meetData, setMeetData] = useState({
     date: '2025-12-08',
     time: '10:00',
+    note: '',
   });
   const [service, setService] = useState<string>(
     services.length > 0 ? services[0].title : ''
@@ -45,6 +48,11 @@ const DetailPageContainer = ({
 
   const totalChance = gifts.reduce((acc, gift) => acc + gift.chance, 0);
   const diff = 1 - totalChance;
+
+  const servicesOptions = services.map((s) => ({
+    label: s.title,
+    value: s.title,
+  }));
 
   if (diff > 0) {
     gifts.push({
@@ -65,7 +73,10 @@ const DetailPageContainer = ({
 
   const handleShowWheel = async () => {
     setLoading(true);
-    const [err, res] = await registerByCompanySlug(company.slug, data);
+    const [err, res] = await registerByCompanySlug(company.slug, {
+      ...data,
+      phone: '+90' + data.phone.substring(data.phone.length - 10),
+    });
     setLoading(false);
 
     if (err) {
@@ -87,10 +98,11 @@ const DetailPageContainer = ({
 
   const handleCreateMeet = async () => {
     const payload = {
-      phone: data.phone,
+      phone: '+90' + data.phone.substring(data.phone.length - 10),
       service_title: service,
       date: meetData.date,
       time: meetData.time,
+      note: meetData.note,
     };
 
     setLoading(true);
@@ -119,7 +131,7 @@ const DetailPageContainer = ({
   return (
     <>
       <div className="container flex items-center justify-center mt-12">
-        <div className="w-full max-w-[960px] border border-slate-200 p-8 rounded-lg box-border flex gap-8">
+        <div className="w-full max-w-[960px] border border-slate-200 p-8 rounded-lg box-border flex flex-col md:flex-row md:gap-8 gap-4">
           <Image
             loader={({ src }) => src}
             alt={company.title}
@@ -207,6 +219,13 @@ const DetailPageContainer = ({
               Randevu almak için lütfen aşağıdan tarih ve saat seçiniz.
             </p>
 
+            <Select
+              label="Hizmet Seçiniz"
+              options={servicesOptions}
+              value={service}
+              onSelect={setService}
+            />
+
             <Input
               label="Randevu Tarihi"
               type="date"
@@ -221,6 +240,14 @@ const DetailPageContainer = ({
               value={meetData.time}
               onChange={(e) =>
                 setMeetData({ ...meetData, time: e.target.value })
+              }
+            />
+
+            <Textarea
+              label="Not (İsteğe bağlı)"
+              value={meetData.note}
+              onChange={(e) =>
+                setMeetData({ ...meetData, note: e.target.value })
               }
             />
 
@@ -249,7 +276,7 @@ const DetailPageContainer = ({
       {company.embed_address && (
         <div className="container flex items-center justify-center mt-12">
           {
-            <div className="w-full max-w-[960px] h-[400px] mt-8 rounded-lg overflow-hidden border border-slate-200">
+            <div className="w-full px-6 md:px-0 md:max-w-[960px] h-[400px] mt-8 rounded-lg overflow-hidden">
               <iframe
                 src={company.embed_address}
                 style={{ border: 0 }}

@@ -88,11 +88,11 @@ const Select = ({
         <div className="w-full relative">
           <div
             className={cn(
-              'cursor-pointer ',
+              'cursor-pointer bg-white',
               'w-full px-3 resize-none',
               'rounded-md box-border border border-[#AEAEAE]',
               'flex items-center',
-              'text-purple font-medium',
+              'text-purple',
               {
                 '!border-red-400': error,
                 'bg-slate-50': loading,

@@ -11,7 +11,7 @@ const SiteHeader = () => {
         <Link href="/">
           <Image
             loader={({ src }) => src}
-            src="https://placehold.co/250x60"
+            src="https://api.cevirkazan360.com/public/images/logo.png"
             width={250}
             height={60}
             alt="Logo"
@@ -19,12 +19,12 @@ const SiteHeader = () => {
         </Link>
 
         <div className="flex items-center gap-2">
-          <Link href="/kayit-ol">
+          <Link href="/kayit-ol" className="hidden md:inline">
             <Button size="small" color="green" className="px-4">
               Kayıt Ol
             </Button>
           </Link>
-          <Link href="/giris-yap">
+          <Link href="/giris-yap" className="">
             <Button size="small" color="white" className="px-4">
               Giriş Yap
             </Button>

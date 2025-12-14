@@ -2,6 +2,7 @@
 import Button from '@/components/panel/Button';
 import Input from '@/components/panel/Input';
 import Modal from '@/components/panel/Modal';
+import Select from '@/components/panel/Select';
 import Textarea from '@/components/panel/Textarea';
 import {
   createHediyeCarki,
@@ -24,6 +25,11 @@ interface IItem {
 interface IHediyeCarkiContainerProps {
   list: IItem[] | [];
 }
+
+const ACTIVE_OPTIONS = [
+  { label: 'Aktif', value: true },
+  { label: 'Pasif', value: false },
+];
 
 const HediyeCarkiContainer = ({ list }: IHediyeCarkiContainerProps) => {
   const { addAlert } = useAlertStore();
@@ -235,7 +241,7 @@ const HediyeCarkiContainer = ({ list }: IHediyeCarkiContainerProps) => {
                     is_active: item.is_active,
                     chance: item.chance * 100,
                     description: item.description,
-                    gift_color: '',
+                    gift_color: item.gift_color,
                   });
                   setShowCreateModal(true);
                 }}
@@ -290,6 +296,13 @@ const HediyeCarkiContainer = ({ list }: IHediyeCarkiContainerProps) => {
             <span className="text-xl">%</span>
           </div>
 
+          <Select
+            label="Durum"
+            options={ACTIVE_OPTIONS}
+            value={data.is_active}
+            onSelect={(e) => setData({ ...data, is_active: e })}
+          />
+
           <Input
             label="Renk"
             type="color"
@@ -338,6 +351,13 @@ const HediyeCarkiContainer = ({ list }: IHediyeCarkiContainerProps) => {
             />
             <span className="text-xl">%</span>
           </div>
+
+          <Select
+            label="Durum"
+            options={ACTIVE_OPTIONS}
+            value={data.is_active}
+            onSelect={(e) => setData({ ...data, is_active: e })}
+          />
 
           <Input
             label="Renk"

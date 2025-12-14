@@ -26,5 +26,5 @@
 html,
 body,
 #next {
-  @apply w-full h-full font-poppins;
+  @apply w-full font-poppins;
 }

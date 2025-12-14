@@ -45,13 +45,13 @@ const WHY_CHOOSE_US = [
 const HomePageContainer = ({ list = [] }: HomePageContainerProps) => {
   return (
     <>
-      <div className="w-full py-20 bg-slate-50 border-b border-slate-200 min-h-[350px] flex items-center justify-center">
+      <div className="w-full px-4 box-border md:px-0 py-20 bg-slate-50 border-b border-slate-200 min-h-[350px] flex items-center justify-center">
         <div className="container flex flex-col gap-4 items-center justify-center">
-          <h2 className="text-5xl text-center font-bold leading-[56px]">
+          <h2 className="text-4xl lg:text-5xl text-center font-bold leading-[56px]">
             Benzersiz <br />
             Berber Deneyimi
           </h2>
-          <p className="text-xl text-center text-slate-600 max-w-[35%] mt-2">
+          <p className="md:text-xl text-center text-slate-600 md:max-w-[35%] mt-2">
             Uzman berberlerimizle mükemmel saç kesimi randevunuzu alın. Hızlı,
             pratik ve modern hayata uygun.
           </p>
@@ -65,18 +65,18 @@ const HomePageContainer = ({ list = [] }: HomePageContainerProps) => {
         </div>
       </div>
 
-      <div className="w-full py-20 min-h-[350px] flex items-center justify-center">
+      <div className="px-8 box-border md:px-0 w-full py-20 min-h-[350px] flex items-center justify-center">
         <div className="container flex flex-col gap-4 items-center justify-center">
-          <h2 className="text-5xl text-center font-bold leading-[56px]">
+          <h2 className="text-4xl lg:text-5xl text-center font-bold leading-[56px]">
             Berberlerimizle
             <br />
             Tanışın
           </h2>
-          <p className="text-xl text-center text-slate-600 max-w-[35%] mt-2">
+          <p className="md:text-xl text-center text-slate-600 max-w-[80%] md:max-w-[35%] mt-2">
             Tercih ettiğiniz berberi seçin ve randevunuzu alın
           </p>
 
-          <div className="w-full grid grid-cols-4 mt-8 gap-6">
+          <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 mt-8 gap-6">
             {list.map((company, index) => (
               <div
                 key={index}
@@ -118,16 +118,16 @@ const HomePageContainer = ({ list = [] }: HomePageContainerProps) => {
 
       <div className="w-full py-20 bg-slate-50 border-b border-t border-slate-200 min-h-[350px] flex items-center justify-center">
         <div className="container flex flex-col gap-4 items-center justify-center">
-          <h2 className="text-5xl text-center font-bold leading-[56px]">
+          <h2 className="text-4xl lg:text-5xl  text-center font-bold leading-[56px]">
             Neden
             <br />
             Bizi Seçmelisiniz?
           </h2>
-          <p className="text-xl text-center text-slate-600 max-w-[35%] mt-2">
+          <p className="md:text-xl text-center text-slate-600 max-w-[80%] md:max-w-[35%] mt-2">
             Mükemmelliğe ve müşteri memnuniyetine bağlıyız
           </p>
 
-          <div className=" max-w-[1150px] mx-auto w-full grid grid-cols-3 gap-4 mt-8">
+          <div className="px-8 box-border md:px-0 max-w-[1150px] mx-auto w-full grid grid-cols-1 lg:grid-cols-3 gap-4 mt-8">
             {WHY_CHOOSE_US.map((item, index) => (
               <div
                 key={index}

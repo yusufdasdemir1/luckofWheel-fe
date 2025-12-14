@@ -6,7 +6,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
   return (
     <>
       <SiteHeader />
-      <main className="">{children}</main>
+      <main className="h-full">{children}</main>
       <SiteFooter />
     </>
   );
