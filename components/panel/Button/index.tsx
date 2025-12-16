@@ -56,7 +56,7 @@ const Button = ({
         'flex items-center justify-center gap-2',
         'text-center',
         'transition-all duration-200',
-        'disabled:!opacity-75 disabled:!cursor-not-allowed disabled:!bg-slate-200 disabled:!text-slate-800',
+        'disabled:!opacity-75 disabled:!cursor-not-allowed disabled:!bg-slate-200 disabled:!text-slate-800 disabled:!border-slate-300',
         'font-medium',
         'border-2 box-border',
         className,

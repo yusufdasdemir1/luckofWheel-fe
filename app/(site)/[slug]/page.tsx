@@ -2,6 +2,7 @@ import DetailPageContainer from '@/containers/DetailPageContainer';
 import { fetchCompanyBySlug } from '@/services/companyService';
 import {
   fetchGiftsByCompanySlug,
+  fetchOccupiedSlotsByCompanySlug,
   fetchServicesByCompanySlug,
 } from '@/services/publicService';
 import { notFound } from 'next/navigation';
@@ -20,6 +21,8 @@ const Page = async ({ params }: Props) => {
 
   const [serviceErr, services] = await fetchServicesByCompanySlug(slug);
 
+  const [slotsErr, slots] = await fetchOccupiedSlotsByCompanySlug(slug);
+
   if (err) {
     return notFound();
   }
@@ -29,6 +32,7 @@ const Page = async ({ params }: Props) => {
       company={company}
       gifts={!giftErr ? gifts : []}
       services={!serviceErr ? services : []}
+      occupiedSlots={!slotsErr ? slots : []}
     />
   );
 };

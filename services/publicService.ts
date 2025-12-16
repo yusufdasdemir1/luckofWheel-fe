@@ -34,3 +34,10 @@ export const createMeeting = (slug: string, data = {}) => {
     .then((res) => [null, res.data])
     .catch((error) => [error?.response?.data, null]);
 };
+
+export const fetchOccupiedSlotsByCompanySlug = (slug: string) => {
+  return axios
+    .get(`/public/occupied-meetings/${slug}`)
+    .then((res) => [null, res.data])
+    .catch((error) => [error?.response?.data, null]);
+};

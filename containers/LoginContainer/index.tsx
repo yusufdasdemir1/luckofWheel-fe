@@ -37,7 +37,9 @@ const LoginPageContainer = () => {
         id: Math.random().toString(36).substring(2, 9),
         type: 'error',
         title: ' Hata',
-        content: err.error || 'Giriş işlemi sırasında bir hata oluştu.',
+        content:
+          Object.values(err).join(', ') ||
+          'Giriş işlemi sırasında bir hata oluştu.',
       });
     }
 

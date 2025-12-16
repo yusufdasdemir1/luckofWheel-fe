@@ -12,17 +12,34 @@ import IService from '@/types/IService';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
+import { DateTime } from 'luxon';
+import classNames from 'classnames';
+
+const today = DateTime.now().toISODate();
+
+const next5Days = Array.from({ length: 5 }, (_, i) =>
+  DateTime.now().plus({ days: i }).toISODate()
+);
+
+const hours = Array.from({ length: 12 }, (_, i) => {
+  const hour = i + 9;
+  return hour < 10 ? `0${hour}` : `${hour}`;
+});
+
+const quartes = ['00', '15', '30', '45'];
 
 interface DetailPageContainerProps {
   company: ICompany;
   gifts: IGift[];
   services: IService[];
+  occupiedSlots: any[];
 }
 
 const DetailPageContainer = ({
   company,
-  gifts,
-  services,
+  gifts = [],
+  services = [],
+  occupiedSlots = [],
 }: DetailPageContainerProps) => {
   const { addAlert } = useAlertStore();
 
@@ -37,9 +54,9 @@ const DetailPageContainer = ({
     email: '',
   });
   const [earnedGift, setEarnedGift] = useState<any>(null);
-  const [meetData, setMeetData] = useState({
-    date: '2025-12-08',
-    time: '10:00',
+  const [meetData, setMeetData] = useState<any>({
+    date: today,
+    time: null,
     note: '',
   });
   const [service, setService] = useState<string>(
@@ -50,7 +67,7 @@ const DetailPageContainer = ({
   const diff = 1 - totalChance;
 
   const servicesOptions = services.map((s) => ({
-    label: s.title,
+    label: `${s.title} (${s.duration} dk - ${s.price} TL)`,
     value: s.title,
   }));
 
@@ -84,7 +101,8 @@ const DetailPageContainer = ({
         id: Math.random().toString(36).substring(2, 9),
         type: 'error',
         title: 'Hata',
-        content: err.error || 'Kayıt sırasında bir hata oluştu.',
+        content:
+          Object.values(err).join(', ') || 'Kayıt sırasında bir hata oluştu.',
       });
     }
 
@@ -125,6 +143,26 @@ const DetailPageContainer = ({
       type: 'success',
       title: 'Başarılı',
       content: 'Randevunuz başarıyla oluşturuldu.',
+    });
+  };
+
+  const isTimeBusy = (
+    date: string,
+    time: string,
+    busySlots: {
+      date: string;
+      time: string;
+      end_time: string;
+    }[]
+  ) => {
+    return busySlots.some((slot) => {
+      if (slot.date !== date) return false;
+
+      const selectedTime = DateTime.fromISO(`${date}T${time}`);
+      const start = DateTime.fromISO(`${slot.date}T${slot.time}`);
+      const end = DateTime.fromISO(`${slot.date}T${slot.end_time}`);
+
+      return selectedTime >= start && selectedTime < end;
     });
   };
 
@@ -170,7 +208,7 @@ const DetailPageContainer = ({
         </div>
       </div>
 
-      <div className="container flex items-center justify-center mt-12">
+      <div className="container flex flex-col items-center justify-center mt-12">
         {mode === 'before' && (
           <div className="w-full max-w-[400px] flex flex-col items-center gap-4">
             <h2 className="text-xl font-semibold mr-auto">Çark için</h2>
@@ -184,11 +222,22 @@ const DetailPageContainer = ({
               value={data.surname}
               onChange={(e) => handleChange('surname', e.target.value)}
             />
-            <Input
-              label="Telefon"
-              value={data.phone}
-              onChange={(e) => handleChange('phone', e.target.value)}
-            />
+
+            <div className="w-full flex flex-col gap-1">
+              <span className="text-sm text-black/90">Telefon</span>
+
+              <div className="flex items-end">
+                <div className="w-[50px] min-w-[50px] h-[45px] flex items-center justify-center bg-white border border-[#AEAEAE] text-sm font-medium rounded-l-md">
+                  +90
+                </div>
+                <Input
+                  value={data.phone}
+                  onChange={(e) => handleChange('phone', e.target.value)}
+                  className="!border-l-0 !rounded-l-none"
+                />
+              </div>
+            </div>
+
             <Input
               label="E-posta"
               value={data.email}
@@ -208,53 +257,116 @@ const DetailPageContainer = ({
         )}
 
         {mode === 'meet' && earnedGift && (
-          <div className="w-full max-w-[400px] flex flex-col items-center gap-4">
-            <h2 className="text-3xl font-semibold text-center">Tebrikler!</h2>
-            <p className="text-2xl text-center inline-flex items-center gap-2">
-              <strong className="text-green-500 text-4xl">{earnedGift}</strong>
-              kazandınız!
-            </p>
+          <>
+            <div className="w-full max-w-[400px] flex flex-col items-center gap-4">
+              <h2 className="text-3xl font-semibold text-center">Tebrikler!</h2>
+              <p className="text-2xl text-center inline-flex items-center gap-2">
+                <strong className="text-green-500 text-4xl">
+                  {earnedGift}
+                </strong>
+                kazandınız!
+              </p>
 
-            <p className="w-[90%] mt-4 text-center text-slate-700">
-              Randevu almak için lütfen aşağıdan tarih ve saat seçiniz.
-            </p>
+              <p className="w-[90%] mt-4 text-center text-slate-700">
+                Randevu almak için lütfen aşağıdan tarih ve saat seçiniz.
+              </p>
+            </div>
 
-            <Select
-              label="Hizmet Seçiniz"
-              options={servicesOptions}
-              value={service}
-              onSelect={setService}
-            />
+            <div className="w-full max-w-[960px] mx-auto flex flex-col gap-2 my-12">
+              <div className="flex px-4 md:px-0 flex-col md:flex-row items-center gap-1">
+                {next5Days.map((date) => (
+                  <button
+                    className={classNames(
+                      'w-full h-[40px] flex items-center justify-center bg-slate-50 px-2 box-border rounded-md cursor-pointer hover:font-medium',
+                      { '!bg-black text-white': date === meetData.date }
+                    )}
+                    key={date}
+                    onClick={() => setMeetData({ ...meetData, date: date })}
+                  >
+                    {date === today
+                      ? 'Bugün'
+                      : date === DateTime.now().plus({ days: 1 }).toISODate()
+                      ? 'Yarın'
+                      : DateTime.fromISO(date)
+                          .setLocale('tr')
+                          .toFormat('dd LLLL cccc')}
+                  </button>
+                ))}
+              </div>
 
-            <Input
-              label="Randevu Tarihi"
-              type="date"
-              value={meetData.date}
-              onChange={(e) =>
-                setMeetData({ ...meetData, date: e.target.value })
-              }
-            />
-            <Input
-              label="Randevu Saati"
-              type="time"
-              value={meetData.time}
-              onChange={(e) =>
-                setMeetData({ ...meetData, time: e.target.value })
-              }
-            />
+              <div className="w-fit mx-auto my-4">
+                <div className="flex flex-col gap-2">
+                  {hours.map((hour) => (
+                    <div
+                      className="flex items-center gap-2 border-b border-slate-200 pb-2 last:border-0"
+                      key={hour}
+                    >
+                      <div className="w-[100px] min-w-[100px] flex items-center justify-center mr-2">
+                        <strong className="font-bold text-lg">{hour}:00</strong>
+                      </div>
 
-            <Textarea
-              label="Not (İsteğe bağlı)"
-              value={meetData.note}
-              onChange={(e) =>
-                setMeetData({ ...meetData, note: e.target.value })
-              }
-            />
+                      {quartes.map((quarte) => (
+                        <button
+                          className={classNames(
+                            'w-[60px] min-w-[60px] h-[40px] flex items-center justify-center bg-slate-100 px-2 box-border rounded-md cursor-pointer hover:font-medium',
+                            {
+                              '!bg-black text-white':
+                                meetData.time === `${hour}:${quarte}`,
+                              '!opacity-50 line-through !cursor-not-allowed hover:font-normal':
+                                isTimeBusy(
+                                  meetData.date,
+                                  `${hour}:${quarte}`,
+                                  occupiedSlots
+                                ),
+                            }
+                          )}
+                          key={quarte}
+                          onClick={() =>
+                            !isTimeBusy(
+                              meetData.date,
+                              `${hour}:${quarte}`,
+                              occupiedSlots
+                            ) &&
+                            setMeetData({
+                              ...meetData,
+                              time: `${hour}:${quarte}`,
+                            })
+                          }
+                        >
+                          {hour}:{quarte}
+                        </button>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
 
-            <Button loading={loading} onClick={handleCreateMeet}>
-              Randevu Al
-            </Button>
-          </div>
+            <div className="w-full max-w-[400px] flex flex-col items-center gap-4">
+              <Select
+                label="Hizmet Seçiniz"
+                options={servicesOptions}
+                value={service}
+                onSelect={setService}
+              />
+
+              <Textarea
+                label="Not (İsteğe bağlı)"
+                value={meetData.note}
+                onChange={(e) =>
+                  setMeetData({ ...meetData, note: e.target.value })
+                }
+              />
+
+              <Button
+                loading={loading}
+                onClick={handleCreateMeet}
+                disabled={!meetData.time || !meetData.date || !service}
+              >
+                Randevu Al
+              </Button>
+            </div>
+          </>
         )}
 
         {mode === 'success' && (

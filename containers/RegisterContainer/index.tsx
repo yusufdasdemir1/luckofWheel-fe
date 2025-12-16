@@ -46,7 +46,11 @@ const RegisterContainer = () => {
     }
 
     setLoading(true);
-    const [error, res] = await register(data);
+    const [error, res] = await register({
+      ...data,
+      phone:
+        '+90' + data.company_phone.substring(data.company_phone.length - 10),
+    });
     setLoading(false);
 
     if (error) {
@@ -117,11 +121,22 @@ const RegisterContainer = () => {
         value={data.company_title}
         onChange={(e) => handleChangeData('company_title', e.target.value)}
       />
-      <Input
-        label="Firma Telefon"
-        value={data.company_phone}
-        onChange={(e) => handleChangeData('company_phone', e.target.value)}
-      />
+
+      <div className="flex flex-col gap-1">
+        <span className="text-sm text-black/90">Telefon</span>
+
+        <div className="flex items-end">
+          <div className="w-[50px] min-w-[50px] h-[45px] flex items-center justify-center bg-white border border-[#AEAEAE] text-sm font-medium rounded-l-md">
+            +90
+          </div>
+          <Input
+            value={data.company_phone}
+            onChange={(e) => handleChangeData('company_phone', e.target.value)}
+            className="!border-l-0 !rounded-l-none"
+          />
+        </div>
+      </div>
+
       <Input
         label="Firma E-Posta"
         value={data.company_email}

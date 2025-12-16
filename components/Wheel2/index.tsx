@@ -60,6 +60,14 @@ const Wheel2 = ({ data, winnerTitle }) => {
     if (isSpinning) return;
     setIsSpinning(true);
 
+    const audio = new Audio('/audio.wav');
+    audio.play();
+    audio.volume = 1;
+
+    setTimeout(() => {
+      audio.pause();
+    }, 3400);
+
     const winnerIndex = data.findIndex((d) => d.title === winnerTitle);
     if (winnerIndex === -1) {
       alert('Winner not found!');
