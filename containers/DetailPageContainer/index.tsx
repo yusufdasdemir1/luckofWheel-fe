@@ -23,7 +23,7 @@ import {
 
 const today = DateTime.now().toISODate();
 
-const next5Days = Array.from({ length: 5 }, (_, i) =>
+const next5Days = Array.from({ length: 7 }, (_, i) =>
   DateTime.now().plus({ days: i }).toISODate()
 );
 
@@ -204,13 +204,25 @@ const DetailPageContainer = ({
 
             <p className="text-slate-600 mt-auto">
               <span>Telefon: </span>
-              <Link className="font-bold" href={`tel:${company.phone}`}>
+              <Link
+                className="font-bold"
+                href={`tel:${company.phone}`}
+                style={{
+                  color: company_color,
+                }}
+              >
                 {company.phone}
               </Link>
             </p>
             <p className="text-slate-600">
               <span>E-posta: </span>
-              <Link className="font-bold" href={`mailto:${company.email}`}>
+              <Link
+                className="font-bold"
+                href={`mailto:${company.email}`}
+                style={{
+                  color: company_color,
+                }}
+              >
                 {company.email}
               </Link>
             </p>
@@ -220,7 +232,7 @@ const DetailPageContainer = ({
               {company.district}, {company.city}
             </span>
 
-            <div className="flex gap-3">
+            <div className="flex gap-3" style={{ color: company_color }}>
               {company.instagram_url && (
                 <Link
                   href={company.instagram_url}
@@ -325,7 +337,7 @@ const DetailPageContainer = ({
               </p>
             </div>
 
-            <div className="w-full max-w-[960px] mx-auto flex flex-col gap-2 my-12">
+            <div className="w-full max-w-[1200px] mx-auto flex flex-col gap-2 my-12">
               <div className="flex px-4 md:px-0 flex-col md:flex-row items-center gap-1">
                 {next5Days.map((date) => (
                   <button

@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import '../assets/globals.css';
 import { ReactNode } from 'react';
 import { fetchMe } from '@/services/authService';
@@ -11,6 +11,13 @@ export const generateMetadata = (): Metadata => {
     description:
       'Kuafor, güzellik salonları ve hizmet sağlayıcıları için randevu ve hizmet yönetim platformu.',
   };
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default async function ({ children }: { children: ReactNode }) {

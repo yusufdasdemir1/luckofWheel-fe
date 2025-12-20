@@ -27,3 +27,17 @@ export const deleteHediyeCarki = (id: number) => {
     .then((res) => [null, res.data])
     .catch((error) => [error?.response?.data, null]);
 };
+
+export const updateGiftStatus = (id: number, data = {}) => {
+  return axios
+    .patch(`/company/earned-wins/status/${id}`, data)
+    .then((res) => [null, res.data])
+    .catch((error) => [error?.response?.data, null]);
+};
+
+export const fetchSpinHistory = () => {
+  return axios
+    .get('/spin_history')
+    .then((res) => [null, res.data])
+    .catch((error) => [error?.response?.data, null]);
+};

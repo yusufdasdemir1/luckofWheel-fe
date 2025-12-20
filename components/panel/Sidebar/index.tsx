@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { PiGear, PiSpinnerBallLight } from 'react-icons/pi';
 import { useState } from 'react';
-import { IoMenuSharp } from 'react-icons/io5';
+import { IoGiftOutline, IoMenuSharp } from 'react-icons/io5';
 import { useAuthStore } from '@/stores/authStore';
 import { MdOutlineDesignServices } from 'react-icons/md';
 
@@ -39,6 +39,11 @@ const Sidebar = () => {
       to: '/panel/firma-ayarlari',
       label: 'Firma Ayarları',
       icon: <PiGear size={24} />,
+    },
+    {
+      to: '/panel/kazanilan-hediyeler',
+      label: 'Kazanılan Hediyeler',
+      icon: <IoGiftOutline size={24} />,
     },
   ];
 
