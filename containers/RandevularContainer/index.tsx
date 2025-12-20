@@ -1,11 +1,12 @@
 'use client';
 import Button from '@/components/panel/Button';
-import { updateRandevu } from '@/services/randevuService';
+import { deleteRandevu, updateRandevu } from '@/services/randevuService';
 import { useAlertStore } from '@/stores/alertStore';
 import { useAuthStore } from '@/stores/authStore';
 import classNames from 'classnames';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import { FaTrashAlt } from 'react-icons/fa';
 
 interface IItem {
   id: number;
@@ -48,8 +49,6 @@ const RandevularContainer = ({ list }: RandevularContainerProps) => {
   const { addAlert } = useAlertStore();
   const { user } = useAuthStore();
 
-  let currentDate = new Date();
-
   const handleUpdateStatus = async (
     id: number,
     status: 'arrived' | 'canceled'
@@ -75,6 +74,26 @@ const RandevularContainer = ({ list }: RandevularContainerProps) => {
     });
 
     router.refresh();
+  };
+
+  const handleDeleteRandevu = async (id: number) => {
+    const [err, response] = await deleteRandevu(id);
+    if (err) {
+      return addAlert({
+        id: String(new Date().getTime()),
+        title: 'Hata',
+        type: 'error',
+        content: err.message || 'Randevu silinemedi, lütfen tekrar deneyin.',
+      });
+    }
+
+    router.refresh();
+    addAlert({
+      id: String(new Date().getTime()),
+      title: 'Başarılı',
+      type: 'success',
+      content: 'Randevu başarıyla silindi.',
+    });
   };
 
   return (
@@ -140,10 +159,9 @@ const RandevularContainer = ({ list }: RandevularContainerProps) => {
               </strong>
             </div>
 
-            <div className="flex items-center gap-2 text-sm px-2 py-1 box-border">
-              <span className="inline-block w-[130px]">Not</span>
-              <span>:</span>
-              <strong>{item.note}</strong>
+            <div className="flex flex-col gap-2 text-sm px-2 py-1 box-border">
+              <span className="inline-block w-[130px]">Not:</span>
+              <strong>{item.note || '-'}</strong>
             </div>
 
             {item.status === 'waiting' && (
@@ -166,6 +184,14 @@ const RandevularContainer = ({ list }: RandevularContainerProps) => {
                 </Button>
               </div>
             )}
+            <Button
+              size="small"
+              color="red"
+              className="flex-1 max-w-[100px] mt-2"
+              onClick={() => handleDeleteRandevu(item.id)}
+            >
+              <FaTrashAlt /> Sil
+            </Button>
           </div>
         ))}
       </div>

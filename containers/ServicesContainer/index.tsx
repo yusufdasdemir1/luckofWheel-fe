@@ -194,7 +194,7 @@ const ServicesContainer = ({ list }: IServicesContainerProps) => {
               <span className="inline-block w-[130px] min-w-[130px]">
                 Fiyat:
               </span>
-              <strong>{Number(item.price).toFixed(2)} TL</strong>
+              <strong>{item.price} TL</strong>
             </div>
 
             <div className="flex flex-col gap-1 text-sm px-2 py-1 box-border">

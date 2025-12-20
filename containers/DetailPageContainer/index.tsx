@@ -14,6 +14,12 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { DateTime } from 'luxon';
 import classNames from 'classnames';
+import {
+  FaFacebook,
+  FaInstagram,
+  FaWhatsapp,
+  FaYoutube,
+} from 'react-icons/fa6';
 
 const today = DateTime.now().toISODate();
 
@@ -26,7 +32,7 @@ const hours = Array.from({ length: 12 }, (_, i) => {
   return hour < 10 ? `0${hour}` : `${hour}`;
 });
 
-const quartes = ['00', '15', '30', '45'];
+const halfs = ['00', '30'];
 
 interface DetailPageContainerProps {
   company: ICompany;
@@ -166,6 +172,8 @@ const DetailPageContainer = ({
     });
   };
 
+  const company_color = company.company_color || 'black';
+
   return (
     <>
       <div className="container flex items-center justify-center mt-12">
@@ -181,10 +189,17 @@ const DetailPageContainer = ({
             width={0}
             height={0}
             unoptimized
-            className="w-full max-w-[400px] min-w-[400px] !aspect-video object-cover rounded-lg mb-2 overflow-hidden shadow-lg"
+            className="w-full md:max-w-[400px] border-[5px] md:min-w-[400px] !aspect-video object-cover rounded-lg overflow-hidden shadow-lg"
           />
           <div className="flex-1 flex flex-col gap-2">
-            <h1 className="text-4xl font-bold">{company.title}</h1>
+            <h1
+              className="text-4xl font-bold border-b-2 pb-2 w-fit"
+              style={{
+                borderColor: company_color,
+              }}
+            >
+              {company.title}
+            </h1>
             <p className="text-slate-600 mt-2">{company.description}</p>
 
             <p className="text-slate-600 mt-auto">
@@ -204,6 +219,36 @@ const DetailPageContainer = ({
             <span className="text-sm text-slate-500 italic">
               {company.district}, {company.city}
             </span>
+
+            <div className="flex gap-3">
+              {company.instagram_url && (
+                <Link
+                  href={company.instagram_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FaInstagram />
+                </Link>
+              )}
+              {company.youtube_url && (
+                <Link
+                  href={company.youtube_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FaYoutube />
+                </Link>
+              )}
+              {company.facebook_url && (
+                <Link
+                  href={company.facebook_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FaFacebook />
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -232,6 +277,7 @@ const DetailPageContainer = ({
                 </div>
                 <Input
                   value={data.phone}
+                  placeholder="Telefon"
                   onChange={(e) => handleChange('phone', e.target.value)}
                   className="!border-l-0 !rounded-l-none"
                 />
@@ -243,7 +289,14 @@ const DetailPageContainer = ({
               value={data.email}
               onChange={(e) => handleChange('email', e.target.value)}
             />
-            <Button loading={loading} onClick={handleShowWheel}>
+            <Button
+              loading={loading}
+              onClick={handleShowWheel}
+              style={{
+                backgroundColor: company_color,
+                borderColor: company_color,
+              }}
+            >
               Çarkı Çevir
             </Button>
           </div>
@@ -278,8 +331,12 @@ const DetailPageContainer = ({
                   <button
                     className={classNames(
                       'w-full h-[40px] flex items-center justify-center bg-slate-50 px-2 box-border rounded-md cursor-pointer hover:font-medium',
-                      { '!bg-black text-white': date === meetData.date }
+                      { 'text-white': date === meetData.date }
                     )}
+                    style={{
+                      backgroundColor:
+                        date === meetData.date ? company_color : '#fcf9fa',
+                    }}
                     key={date}
                     onClick={() => setMeetData({ ...meetData, date: date })}
                   >
@@ -305,35 +362,40 @@ const DetailPageContainer = ({
                         <strong className="font-bold text-lg">{hour}:00</strong>
                       </div>
 
-                      {quartes.map((quarte) => (
+                      {halfs.map((h, index) => (
                         <button
                           className={classNames(
                             'w-[60px] min-w-[60px] h-[40px] flex items-center justify-center bg-slate-100 px-2 box-border rounded-md cursor-pointer hover:font-medium',
                             {
-                              '!bg-black text-white':
-                                meetData.time === `${hour}:${quarte}`,
+                              'text-white': meetData.time === `${hour}:${h}`,
                               '!opacity-50 line-through !cursor-not-allowed hover:font-normal':
                                 isTimeBusy(
                                   meetData.date,
-                                  `${hour}:${quarte}`,
+                                  `${hour}:${h}`,
                                   occupiedSlots
                                 ),
                             }
                           )}
-                          key={quarte}
+                          style={{
+                            backgroundColor:
+                              meetData.time === `${hour}:${h}`
+                                ? company_color
+                                : '#f9f3f4',
+                          }}
+                          key={index}
                           onClick={() =>
                             !isTimeBusy(
                               meetData.date,
-                              `${hour}:${quarte}`,
+                              `${hour}:${h}`,
                               occupiedSlots
                             ) &&
                             setMeetData({
                               ...meetData,
-                              time: `${hour}:${quarte}`,
+                              time: `${hour}:${h}`,
                             })
                           }
                         >
-                          {hour}:{quarte}
+                          {hour}:{h}
                         </button>
                       ))}
                     </div>
@@ -362,6 +424,10 @@ const DetailPageContainer = ({
                 loading={loading}
                 onClick={handleCreateMeet}
                 disabled={!meetData.time || !meetData.date || !service}
+                style={{
+                  backgroundColor: company_color,
+                  borderColor: company_color,
+                }}
               >
                 Randevu Al
               </Button>
@@ -399,6 +465,15 @@ const DetailPageContainer = ({
           }
         </div>
       )}
+
+      <Link
+        href={`https://api.whatsapp.com/send?phone=${company.phone}&text=Randevu%20olu%C5%9Fturmak%20istiyorum.`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="w-[60px] h-[60px] rounded-full bg-[#128C7E] text-white fixed bottom-5 right-5 z-30 flex items-center justify-center cursor-pointer shadow-lg"
+      >
+        <FaWhatsapp size={24} />
+      </Link>
     </>
   );
 };

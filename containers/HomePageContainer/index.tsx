@@ -49,11 +49,11 @@ const HomePageContainer = ({ list = [] }: HomePageContainerProps) => {
         <div className="container flex flex-col gap-4 items-center justify-center">
           <h2 className="text-4xl lg:text-5xl text-center font-bold leading-[56px]">
             Benzersiz <br />
-            Berber Deneyimi
+            Tasarımcı Deneyimi
           </h2>
           <p className="md:text-xl text-center text-slate-600 md:max-w-[35%] mt-2">
-            Uzman berberlerimizle mükemmel saç kesimi randevunuzu alın. Hızlı,
-            pratik ve modern hayata uygun.
+            Uzman tasarımcılarımızla mükemmel saç kesimi randevunuzu alın.
+            Hızlı, pratik ve modern hayata uygun.
           </p>
           <div className="flex gap-4 mx-auto w-fit mt-4">
             <Link href="/kayit-ol">
@@ -68,12 +68,12 @@ const HomePageContainer = ({ list = [] }: HomePageContainerProps) => {
       <div className="px-8 box-border md:px-0 w-full py-20 min-h-[350px] flex items-center justify-center">
         <div className="container flex flex-col gap-4 items-center justify-center">
           <h2 className="text-4xl lg:text-5xl text-center font-bold leading-[56px]">
-            Berberlerimizle
+            Tasarımcılarımızla
             <br />
             Tanışın
           </h2>
           <p className="md:text-xl text-center text-slate-600 max-w-[80%] md:max-w-[35%] mt-2">
-            Tercih ettiğiniz berberi seçin ve randevunuzu alın
+            Tercih ettiğiniz tasarımcıyı seçin ve randevunuzu alın
           </p>
 
           <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 mt-8 gap-6">

@@ -19,9 +19,8 @@ export default async function ({ children }: { children: ReactNode }) {
   return (
     <html lang="tr">
       <body className={`antialiased`}>
-        {children}
-
         <AuthProvider user={meErr ? undefined : me} />
+        {children}
         <AlertProvider />
       </body>
     </html>

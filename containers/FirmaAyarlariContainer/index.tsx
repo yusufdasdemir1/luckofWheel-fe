@@ -18,7 +18,7 @@ const FirmaAyarlariContainer = () => {
   const [data, setData] = useState({
     title: user?.company?.title || '',
     description: user?.company?.description || '',
-    phone: user?.company?.phone || '',
+    phone: user?.company?.phone ? user.company.phone.replace('+90', '') : '',
     email: user?.company?.email || '',
     show_before_meeting: user?.company?.show_before_meeting || false,
     is_show_wheel: user?.company?.is_show_wheel || false,
@@ -28,6 +28,9 @@ const FirmaAyarlariContainer = () => {
     company_color: user?.company?.company_color || '#000000',
     city: user?.company?.city || '',
     district: user?.company?.district || '',
+    youtube_url: user?.company?.youtube_url || '',
+    instagram_url: user?.company?.instagram_url || '',
+    facebook_url: user?.company?.facebook_url || '',
   });
 
   const handleChangeData = (field: string, value: any) => {
@@ -41,7 +44,7 @@ const FirmaAyarlariContainer = () => {
     setLoading(true);
     const [error, result] = await updateCompanyInfos(
       user?.company?.slug || '',
-      data
+      { ...data, phone: '+90' + data.phone }
     );
     setLoading(false);
 
@@ -72,11 +75,21 @@ const FirmaAyarlariContainer = () => {
         value={data.title}
         onChange={(e) => handleChangeData('title', e.target.value)}
       />
-      <Input
-        label="Firma Telefon"
-        value={data.phone}
-        onChange={(e) => handleChangeData('phone', e.target.value)}
-      />
+
+      <div className="w-full flex flex-col gap-1">
+        <span className="text-sm text-black/90">Telefon</span>
+
+        <div className="flex items-end">
+          <div className="w-[50px] min-w-[50px] h-[45px] flex items-center justify-center bg-white border border-[#AEAEAE] text-sm font-medium rounded-l-md">
+            +90
+          </div>
+          <Input
+            value={data.phone}
+            onChange={(e) => handleChangeData('phone', e.target.value)}
+          />
+        </div>
+      </div>
+
       <Input
         label="Firma E-Posta"
         value={data.email}
@@ -109,6 +122,28 @@ const FirmaAyarlariContainer = () => {
         className="max-w-[50px] !p-0"
       />
 
+      <hr className="border-slate-200 my-2" />
+
+      <Input
+        label="Instalgram URL"
+        value={data.instagram_url}
+        onChange={(e) => handleChangeData('instagram_url', e.target.value)}
+      />
+
+      <Input
+        label="Youtube URL"
+        value={data.youtube_url}
+        onChange={(e) => handleChangeData('youtube_url', e.target.value)}
+      />
+
+      <Input
+        label="Facebook URL"
+        value={data.facebook_url}
+        onChange={(e) => handleChangeData('facebook_url', e.target.value)}
+      />
+
+      <hr className="border-slate-200 my-2" />
+
       <Textarea
         label="Firma Açıklaması"
         value={data.description}
@@ -119,6 +154,9 @@ const FirmaAyarlariContainer = () => {
         value={data.embed_address}
         onChange={(e) => handleChangeData('embed_address', e.target.value)}
       />
+
+      <hr className="border-slate-200 my-2" />
+
       <Checkbox
         title="Çarkı Göster"
         value={data.is_show_wheel}

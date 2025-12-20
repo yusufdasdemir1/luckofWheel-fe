@@ -97,7 +97,9 @@ const HediyeCarkiContainer = ({ list }: IHediyeCarkiContainerProps) => {
         id: String(Date.now()),
         type: 'error',
         title: 'Hediye Çarkı Güncellenemedi',
-        content: err.message || 'Bir hata oluştu, lütfen tekrar deneyin.',
+        content: err.non_field_errors
+          ? err.non_field_errors.join(', ')
+          : 'Bir hata oluştu, lütfen tekrar deneyin.',
       });
     }
 

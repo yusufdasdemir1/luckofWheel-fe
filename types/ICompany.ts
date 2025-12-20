@@ -16,4 +16,7 @@ export default interface ICompany {
   company_color: string;
   city: string;
   district: string;
+  youtube_url: string;
+  instagram_url: string;
+  facebook_url: string;
 }

@@ -13,3 +13,10 @@ export const updateRandevu = (id: number, data = {}) => {
     .then((res) => [null, res.data])
     .catch((error) => [error?.response?.data, null]);
 };
+
+export const deleteRandevu = (id: number) => {
+  return axios
+    .delete(`/company/meetings/delete/${id}`)
+    .then((res) => [null, res.data])
+    .catch((error) => [error?.response?.data, null]);
+};
