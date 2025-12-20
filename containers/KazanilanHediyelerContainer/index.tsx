@@ -1,10 +1,14 @@
 'use client';
 import Button from '@/components/panel/Button';
-import { updateGiftStatus } from '@/services/hediyeCarkiService';
+import {
+  deleteEarnedGift,
+  updateGiftStatus,
+} from '@/services/hediyeCarkiService';
 import { useAlertStore } from '@/stores/alertStore';
 import { DateTime } from 'luxon';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import { FaTrashAlt } from 'react-icons/fa';
 
 interface KazanilanHediyelerContainerProps {
   list: any[];
@@ -43,6 +47,27 @@ const KazanilanHediyelerContainer = ({
       title: 'Başarılı',
       type: 'success',
       content: 'Hediye başarıyla kullanıldı.',
+    });
+  };
+
+  const handleDelete = async (giftId: number) => {
+    const [err, response] = await deleteEarnedGift(giftId);
+
+    if (err) {
+      return addAlert({
+        id: String(new Date().getTime()),
+        title: 'Hata',
+        type: 'error',
+        content: err.message || 'Hediye silinemedi, lütfen tekrar deneyin.',
+      });
+    }
+
+    router.refresh();
+    addAlert({
+      id: String(new Date().getTime()),
+      title: 'Başarılı',
+      type: 'success',
+      content: 'Hediye başarıyla silindi.',
     });
   };
 
@@ -103,6 +128,15 @@ const KazanilanHediyelerContainer = ({
                 Kullanıldı Olarak İşaretle
               </Button>
             )}
+
+            <Button
+              size="small"
+              color="red"
+              className="flex-1 max-w-[100px] ml-auto"
+              onClick={() => handleDelete(item.id)}
+            >
+              <FaTrashAlt /> Sil
+            </Button>
           </div>
         ))}
       </div>

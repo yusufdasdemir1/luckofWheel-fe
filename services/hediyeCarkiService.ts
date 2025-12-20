@@ -41,3 +41,10 @@ export const fetchSpinHistory = () => {
     .then((res) => [null, res.data])
     .catch((error) => [error?.response?.data, null]);
 };
+
+export const deleteEarnedGift = (id: number) => {
+  return axios
+    .delete(`/company/earned-wins/${id}`)
+    .then((res) => [null, res.data])
+    .catch((error) => [error?.response?.data, null]);
+};
