@@ -106,10 +106,6 @@ const KazanilanHediyelerContainer = ({
           </div>
         ))}
       </div>
-
-      <pre className="text-xs">
-        <code>{JSON.stringify(list, null, 2)}</code>
-      </pre>
     </>
   );
 };

@@ -28,3 +28,22 @@ body,
 #next {
   @apply w-full font-poppins;
 }
+
+@keyframes goldGlow {
+  0% {
+    box-shadow: 0 0 12px rgba(255, 215, 100, 0.6),
+      0 0 28px rgba(255, 195, 80, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 22px rgba(255, 235, 160, 0.95),
+      0 0 48px rgba(255, 200, 90, 1);
+  }
+  100% {
+    box-shadow: 0 0 12px rgba(255, 215, 100, 0.6),
+      0 0 28px rgba(255, 195, 80, 0.4);
+  }
+}
+
+.animate-gold-glow {
+  animation: goldGlow 1s ease-in-out infinite;
+}

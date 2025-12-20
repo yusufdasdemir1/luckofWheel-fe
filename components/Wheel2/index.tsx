@@ -1,5 +1,7 @@
 // @ts-nocheck
 import React, { useRef, useEffect, useState } from 'react';
+import CarkBorder from '../../assets/cark';
+import Pointer from '../../assets/pointer';
 
 const Wheel2 = ({ data, winnerTitle }) => {
   const canvasRef = useRef(null);
@@ -24,7 +26,6 @@ const Wheel2 = ({ data, winnerTitle }) => {
       ctx.arc(0, 0, radius - 10, startAngle, startAngle + sliceAngle);
       ctx.fillStyle = item.gift_color;
       ctx.fill();
-      ctx.stroke();
 
       // Yazı
       ctx.save();
@@ -110,9 +111,11 @@ const Wheel2 = ({ data, winnerTitle }) => {
 
   return (
     <div
-      className="mt-8"
-      style={{ textAlign: 'center', position: 'relative', width: 420 }}
+      className="mt-8 z-10"
+      style={{ textAlign: 'center', position: 'relative', width: 300 }}
     >
+      <CarkBorder />
+
       <div style={{ position: 'relative', display: 'inline-block' }}>
         {/* Canvas */}
         <canvas
@@ -125,16 +128,9 @@ const Wheel2 = ({ data, winnerTitle }) => {
           }}
         />
         {/* Sabit ok işareti */}
-        <div
-          className="absolute top-1/2 -right-4 -translate-y-1/2 rotate-[270deg]"
-          style={{
-            width: 0,
-            height: 0,
-            borderLeft: '15px solid transparent',
-            borderRight: '15px solid transparent',
-            borderBottom: '30px solid black',
-          }}
-        />
+        <div className="absolute top-1/2 -right-3 -translate-y-1/2 z-50">
+          <Pointer />
+        </div>
       </div>
 
       {/* <div>
