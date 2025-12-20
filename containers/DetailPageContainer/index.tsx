@@ -117,6 +117,9 @@ const DetailPageContainer = ({
 
     setTimeout(() => {
       setMode('meet');
+      const audio = new Audio('/win.mp3');
+      audio.play();
+      audio.volume = 1;
     }, 4000);
   };
 
