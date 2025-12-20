@@ -3,6 +3,37 @@ import React, { useRef, useEffect, useState } from 'react';
 import CarkBorder from '../../assets/cark';
 import Pointer from '../../assets/pointer';
 
+function getContrastTextColor(bgColor) {
+  let r, g, b;
+
+  // HEX desteği
+  if (bgColor.startsWith('#')) {
+    const hex = bgColor.replace('#', '');
+    const bigint = parseInt(
+      hex.length === 3
+        ? hex
+            .split('')
+            .map((c) => c + c)
+            .join('')
+        : hex,
+      16
+    );
+
+    r = (bigint >> 16) & 255;
+    g = (bigint >> 8) & 255;
+    b = bigint & 255;
+  }
+  // RGB desteği
+  else if (bgColor.startsWith('rgb')) {
+    [r, g, b] = bgColor.match(/\d+/g).map(Number);
+  }
+
+  // WCAG luminance hesaplama
+  const luminance = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+
+  return luminance > 0.5 ? '#000000' : '#FFFFFF';
+}
+
 const Wheel2 = ({ data, winnerTitle }) => {
   const canvasRef = useRef(null);
   const [angle, setAngle] = useState(0);
@@ -31,7 +62,7 @@ const Wheel2 = ({ data, winnerTitle }) => {
       ctx.save();
       ctx.rotate(startAngle + sliceAngle / 2);
       ctx.textAlign = 'right';
-      ctx.fillStyle = '#fff';
+      ctx.fillStyle = getContrastTextColor(item.gift_color);
       ctx.font = 'semibold 10px sans-serif';
       ctx.fillText(item.title, radius - 20, 5);
       ctx.restore();
