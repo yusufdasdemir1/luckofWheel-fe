@@ -62,7 +62,7 @@ const DetailPageContainer = ({
 
   const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState<'before' | 'wheel' | 'meet' | 'success'>(
-    'before'
+    'meet'
   );
   const [data, setData] = useState({
     name: '',
@@ -70,7 +70,7 @@ const DetailPageContainer = ({
     phone: '',
     email: '',
   });
-  const [earnedGift, setEarnedGift] = useState<any>(null);
+  const [earnedGift, setEarnedGift] = useState<any>('x');
   const [earnedGiftMessage, setEarnedGiftMessage] = useState<any>(null);
   const [meetData, setMeetData] = useState<any>({
     date: today,
@@ -391,7 +391,7 @@ const DetailPageContainer = ({
                         {
                           hidden:
                             DateTime.fromISO(meetData.date).weekday === 7 &&
-                            ['08', '09', '19'].includes(hour),
+                            ['08', '09', '18', '19'].includes(hour),
                         }
                       )}
                       key={hour}
