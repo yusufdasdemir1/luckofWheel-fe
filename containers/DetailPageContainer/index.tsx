@@ -39,7 +39,7 @@ while (nextDays.length < 7) {
 }
 
 const hours = Array.from({ length: 12 }, (_, i) => {
-  const hour = i + 9;
+  const hour = i + 8;
   return hour < 10 ? `0${hour}` : `${hour}`;
 });
 
@@ -386,7 +386,14 @@ const DetailPageContainer = ({
                 <div className="flex flex-col gap-2">
                   {hours.map((hour) => (
                     <div
-                      className="flex items-center gap-2 border-b border-slate-200 pb-2 last:border-0"
+                      className={classNames(
+                        'flex items-center gap-2 border-b border-slate-200 pb-2 last:border-0',
+                        {
+                          hidden:
+                            DateTime.fromISO(meetData.date).weekday === 7 &&
+                            ['08', '09'].includes(hour),
+                        }
+                      )}
                       key={hour}
                     >
                       <div className="w-[100px] min-w-[100px] flex items-center justify-center mr-2">
@@ -398,6 +405,8 @@ const DetailPageContainer = ({
                           className={classNames(
                             'w-[60px] min-w-[60px] h-[40px] flex items-center justify-center bg-slate-100 px-2 box-border rounded-md cursor-pointer hover:font-medium',
                             {
+                              hidden: ['08:00'].includes(`${hour}:${h}`),
+                              'ml-auto': hour === '08' && h === '30',
                               'text-white': meetData.time === `${hour}:${h}`,
                               '!opacity-50 line-through !cursor-not-allowed hover:font-normal':
                                 isTimeBusy(
