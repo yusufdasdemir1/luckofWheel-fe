@@ -391,7 +391,7 @@ const DetailPageContainer = ({
                         {
                           hidden:
                             DateTime.fromISO(meetData.date).weekday === 7 &&
-                            ['08', '09'].includes(hour),
+                            ['08', '09', '19'].includes(hour),
                         }
                       )}
                       key={hour}
