@@ -22,10 +22,21 @@ import {
 } from 'react-icons/fa6';
 
 const today = DateTime.now().toISODate();
+const todayDateTime = DateTime.now();
 
-const next5Days = Array.from({ length: 7 }, (_, i) =>
-  DateTime.now().plus({ days: i }).toISODate()
-);
+const nextDays: any[] = [];
+let offset = 0;
+
+while (nextDays.length < 7) {
+  const day = DateTime.now().plus({ days: offset });
+
+  // 1 = Pazartesi
+  if (day.weekday !== 1) {
+    nextDays.push(day.toISODate());
+  }
+
+  offset++;
+}
 
 const hours = Array.from({ length: 12 }, (_, i) => {
   const hour = i + 9;
@@ -60,6 +71,7 @@ const DetailPageContainer = ({
     email: '',
   });
   const [earnedGift, setEarnedGift] = useState<any>(null);
+  const [earnedGiftMessage, setEarnedGiftMessage] = useState<any>(null);
   const [meetData, setMeetData] = useState<any>({
     date: today,
     time: null,
@@ -114,6 +126,7 @@ const DetailPageContainer = ({
 
     setMode('wheel');
     setEarnedGift(res.gift_views);
+    setEarnedGiftMessage(res.message);
 
     setTimeout(() => {
       setMode('meet');
@@ -192,7 +205,7 @@ const DetailPageContainer = ({
             width={0}
             height={0}
             unoptimized
-            className="w-full md:max-w-[400px] border-[5px] md:min-w-[400px] !aspect-video object-cover rounded-lg overflow-hidden shadow-lg"
+            className="w-full md:max-w-[400px] md:min-w-[400px] !aspect-video object-cover rounded-lg overflow-hidden"
           />
           <div className="flex-1 flex flex-col gap-2">
             <h1
@@ -326,11 +339,14 @@ const DetailPageContainer = ({
 
         {mode === 'meet' && earnedGift && (
           <>
-            <div className="w-full max-w-[400px] flex flex-col items-center gap-4">
+            <div className="w-full max-w-[460px] flex flex-col items-center gap-4">
               <h2 className="text-3xl font-semibold text-center">Tebrikler!</h2>
-              <p className="text-2xl text-center inline-flex items-center gap-2">
-                <strong className="text-green-500 text-4xl">
+              <p className="text-2xl text-center inline-flex flex-col items-center justify-center gap-2">
+                <strong className="text-green-500 text-3xl">
                   {earnedGift}
+                </strong>
+                <strong className="text-green-500 text-3xl underline">
+                  {earnedGiftMessage}
                 </strong>
                 kazandınız!
               </p>
@@ -342,7 +358,7 @@ const DetailPageContainer = ({
 
             <div className="w-full max-w-[1200px] mx-auto flex flex-col gap-2 my-12">
               <div className="flex px-4 md:px-0 flex-col md:flex-row items-center gap-1">
-                {next5Days.map((date) => (
+                {nextDays.map((date) => (
                   <button
                     className={classNames(
                       'w-full h-[40px] flex items-center justify-center bg-slate-50 px-2 box-border rounded-md cursor-pointer hover:font-medium',
@@ -388,7 +404,10 @@ const DetailPageContainer = ({
                                   meetData.date,
                                   `${hour}:${h}`,
                                   occupiedSlots
-                                ),
+                                ) ||
+                                DateTime.fromISO(
+                                  `${meetData.date}T${hour}:${h}`
+                                ) <= todayDateTime,
                             }
                           )}
                           style={{
