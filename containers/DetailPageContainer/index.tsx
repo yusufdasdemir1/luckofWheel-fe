@@ -62,7 +62,7 @@ const DetailPageContainer = ({
 
   const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState<'before' | 'wheel' | 'meet' | 'success'>(
-    'meet'
+    'before'
   );
   const [data, setData] = useState({
     name: '',
@@ -70,7 +70,7 @@ const DetailPageContainer = ({
     phone: '',
     email: '',
   });
-  const [earnedGift, setEarnedGift] = useState<any>('x');
+  const [earnedGift, setEarnedGift] = useState<any>(null);
   const [earnedGiftMessage, setEarnedGiftMessage] = useState<any>(null);
   const [meetData, setMeetData] = useState<any>({
     date: today,
