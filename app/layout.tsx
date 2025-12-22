@@ -4,6 +4,7 @@ import { ReactNode } from 'react';
 import { fetchMe } from '@/services/authService';
 import AuthProvider from '@/components/AuthProvider';
 import AlertProvider from '@/components/AlertProvider';
+import { GoogleAnalytics } from '@next/third-parties/google';
 
 export const generateMetadata = (): Metadata => {
   return {
@@ -29,6 +30,7 @@ export default async function ({ children }: { children: ReactNode }) {
         <AuthProvider user={meErr ? undefined : me} />
         {children}
         <AlertProvider />
+        <GoogleAnalytics gaId="G-5YEP36RP00" />
       </body>
     </html>
   );
