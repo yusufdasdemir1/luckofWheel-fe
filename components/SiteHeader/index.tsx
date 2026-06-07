@@ -19,12 +19,7 @@ const SiteHeader = () => {
         </Link>
 
         <div className="flex items-center gap-2">
-          <Link href="/kayit-ol" className="hidden md:inline">
-            <Button size="small" color="green" className="px-4">
-              Kayıt Ol
-            </Button>
-          </Link>
-          <Link href="/giris-yap" className="">
+<Link href="/giris-yap" className="">
             <Button size="small" color="white" className="px-4">
               Giriş Yap
             </Button>

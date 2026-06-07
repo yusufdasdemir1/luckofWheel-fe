@@ -55,13 +55,6 @@ const HomePageContainer = ({ list = [] }: HomePageContainerProps) => {
             Uzman tasarımcılarımızla mükemmel saç kesimi randevunuzu alın.
             Hızlı, pratik ve modern hayata uygun.
           </p>
-          <div className="flex gap-4 mx-auto w-fit mt-4">
-            <Link href="/kayit-ol">
-              <Button color="green" size="small">
-                Hemen Kayıt Ol
-              </Button>
-            </Link>
-          </div>
         </div>
       </div>
 

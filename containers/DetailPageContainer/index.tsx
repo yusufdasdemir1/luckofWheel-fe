@@ -2,7 +2,6 @@
 import Button from '@/components/panel/Button';
 import Input from '@/components/panel/Input';
 import Select from '@/components/panel/Select';
-import Textarea from '@/components/panel/Textarea';
 import Wheel2 from '@/components/Wheel2';
 import { createMeeting, registerByCompanySlug } from '@/services/publicService';
 import { useAlertStore } from '@/stores/alertStore';
@@ -21,6 +20,12 @@ import {
   FaYoutube,
 } from 'react-icons/fa6';
 
+const KUAFOR_OPTIONS = [
+  { label: 'Serhat Uludere', value: 'Serhat Uludere' },
+  { label: 'Ahmet Albayrak', value: 'Ahmet Albayrak' },
+  { label: 'Ahmet Yılmaz', value: 'Ahmet Yılmaz' },
+];
+
 const today = DateTime.now().toISODate();
 const todayDateTime = DateTime.now();
 
@@ -29,17 +34,13 @@ let offset = 0;
 
 while (nextDays.length < 7) {
   const day = DateTime.now().plus({ days: offset });
-
-  // 1 = Pazartesi
-  if (day.weekday !== 1) {
-    nextDays.push(day.toISODate());
-  }
-
+  nextDays.push(day.toISODate());
   offset++;
 }
 
-const hours = Array.from({ length: 12 }, (_, i) => {
-  const hour = i + 8;
+// 09:00 – 17:00 arası (9 saat)
+const hours = Array.from({ length: 9 }, (_, i) => {
+  const hour = i + 9;
   return hour < 10 ? `0${hour}` : `${hour}`;
 });
 
@@ -391,7 +392,7 @@ const DetailPageContainer = ({
                         {
                           hidden:
                             DateTime.fromISO(meetData.date).weekday === 7 &&
-                            ['08', '09', '18', '19'].includes(hour),
+                            hour === '09',
                         }
                       )}
                       key={hour}
@@ -405,8 +406,7 @@ const DetailPageContainer = ({
                           className={classNames(
                             'w-[60px] min-w-[60px] h-[40px] flex items-center justify-center bg-slate-100 px-2 box-border rounded-md cursor-pointer hover:font-medium',
                             {
-                              hidden: ['08:00'].includes(`${hour}:${h}`),
-                              'ml-auto': hour === '08' && h === '30',
+                              hidden: `${hour}:${h}` === '17:30',
                               'text-white': meetData.time === `${hour}:${h}`,
                               '!opacity-50 line-through !cursor-not-allowed hover:font-normal':
                                 isTimeBusy(
@@ -455,18 +455,18 @@ const DetailPageContainer = ({
                 onSelect={setService}
               />
 
-              <Textarea
-                label="Not (İsteğe bağlı)"
+              <Select
+                label="Kuaför Seçiniz"
+                placeholder="Lütfen işlem yaptırmak istediğiniz kuaförü seçiniz"
+                options={KUAFOR_OPTIONS}
                 value={meetData.note}
-                onChange={(e) =>
-                  setMeetData({ ...meetData, note: e.target.value })
-                }
+                onSelect={(val) => setMeetData({ ...meetData, note: val })}
               />
 
               <Button
                 loading={loading}
                 onClick={handleCreateMeet}
-                disabled={!meetData.time || !meetData.date || !service}
+                disabled={!meetData.time || !meetData.date || !service || !meetData.note}
                 style={{
                   backgroundColor: company_color,
                   borderColor: company_color,

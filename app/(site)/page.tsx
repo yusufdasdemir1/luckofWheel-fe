@@ -14,7 +14,7 @@ export const generateMetadata = () => {
 const Home = async () => {
   const [err, result] = await fetchPublicCompanies();
 
-  return <HomePageContainer list={!err ? result : []} />;
+  return <HomePageContainer list={!err && result ? result : []} />;
 };
 
 export default Home;

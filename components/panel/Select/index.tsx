@@ -30,6 +30,7 @@ interface Props extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'size'> {
   options: any[];
   value?: any;
   loading?: boolean;
+  placeholder?: string;
 }
 
 const Select = ({
@@ -43,6 +44,7 @@ const Select = ({
   value,
   loading,
   inputClassName,
+  placeholder = 'Select an option',
 }: Props) => {
   const [show, setShow] = useState(false);
   const selectRef = useRef<any>(null);
@@ -102,7 +104,7 @@ const Select = ({
             )}
             onClick={() => !loading && setShow(!show)}
           >
-            {selectedValue?.label || 'Select an option'}
+            {selectedValue?.label || placeholder}
           </div>
 
           {!loading ? (
