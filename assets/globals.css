@@ -6,6 +6,19 @@
 
   --color-primary: #2389ff;
 
+  --color-ck-cream: #f6f1ea;
+  --color-ck-ink: #16131a;
+  --color-ck-ink-soft: #221e27;
+  --color-ck-ink-line: #3a3440;
+  --color-ck-red: #e2492f;
+  --color-ck-red-dark: #c2381f;
+  --color-ck-yellow: #f2b33d;
+  --color-ck-line: #e6ded3;
+  --color-ck-input: #d9cfc2;
+  --color-ck-muted: #4a4450;
+  --color-ck-muted-dark: #bdb6c6;
+  --color-ck-wa: #25d366;
+
   --color-success-alert: #4ca690;
   --color-bg-success-alert: #dbede9;
 
@@ -46,4 +59,105 @@ body,
 
 .animate-gold-glow {
   animation: goldGlow 1s ease-in-out infinite;
+}
+
+/* ---- Ana sayfa (Çevir Kazan 360) ---- */
+html {
+  scroll-behavior: smooth;
+}
+
+@keyframes ck-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes ck-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes ck-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(242, 179, 61, 0.55);
+  }
+  70% {
+    box-shadow: 0 0 0 18px rgba(242, 179, 61, 0);
+  }
+}
+
+@keyframes ck-rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ck-float {
+  animation: ck-float 5s ease-in-out infinite;
+}
+
+.ck-float2 {
+  animation: ck-float 6.5s ease-in-out infinite 0.8s;
+}
+
+.ck-marquee {
+  animation: ck-marquee 28s linear infinite;
+}
+
+.ck-pulse {
+  animation: ck-pulse 2.2s ease-out infinite;
+}
+
+.ck-rise {
+  animation: ck-rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* Scroll'da fade-up: JS gelmeden içerik görünür kalır */
+.ck-reveal-pre {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+.ck-reveal-in {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.8s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .ck-float,
+  .ck-float2,
+  .ck-marquee,
+  .ck-pulse,
+  .ck-rise {
+    animation: none;
+  }
+
+  .ck-reveal-pre {
+    opacity: 1;
+    transform: none;
+  }
+
+  .ck-reveal-in {
+    transition: none;
+  }
 }

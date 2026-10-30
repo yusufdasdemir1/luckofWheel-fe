@@ -34,10 +34,36 @@ function getContrastTextColor(bgColor) {
   return luminance > 0.5 ? '#000000' : '#FFFFFF';
 }
 
-const Wheel2 = ({ data, winnerTitle }) => {
+interface Wheel2Props {
+  data: any[];
+  winnerTitle?: string | null;
+  autoSpin?: boolean;
+  idle?: boolean;
+  muted?: boolean;
+  spinKey?: number;
+  onFinish?: (title: string) => void;
+  className?: string;
+}
+
+const Wheel2 = ({
+  data,
+  winnerTitle = null,
+  autoSpin = true,
+  idle = false,
+  muted = false,
+  spinKey = 0,
+  onFinish,
+  className = 'mt-8',
+}: Wheel2Props) => {
   const canvasRef = useRef(null);
+  const angleRef = useRef(0);
+  const spinningRef = useRef(false);
   const [angle, setAngle] = useState(0);
-  const [isSpinning, setIsSpinning] = useState(false);
+
+  const updateAngle = (value) => {
+    angleRef.current = value;
+    setAngle(value);
+  };
 
   // Çarkı çiz
   const drawWheel = (ctx, angleOffset) => {
@@ -73,14 +99,6 @@ const Wheel2 = ({ data, winnerTitle }) => {
     ctx.restore();
   };
 
-  const hashCode = (str) => {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      hash = str.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    return hash;
-  };
-
   // Canvas her frame'de yeniden çizilsin
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -89,21 +107,23 @@ const Wheel2 = ({ data, winnerTitle }) => {
   }, [angle, data]);
 
   const spinWheel = () => {
-    if (isSpinning) return;
-    setIsSpinning(true);
+    if (spinningRef.current) return;
+    spinningRef.current = true;
 
-    const audio = new Audio('/audio.wav');
-    audio.play();
-    audio.volume = 1;
+    if (!muted) {
+      const audio = new Audio('/audio.wav');
+      audio.play();
+      audio.volume = 1;
 
-    setTimeout(() => {
-      audio.pause();
-    }, 3400);
+      setTimeout(() => {
+        audio.pause();
+      }, 3400);
+    }
 
     const winnerIndex = data.findIndex((d) => d.title === winnerTitle);
     if (winnerIndex === -1) {
       alert('Winner not found!');
-      setIsSpinning(false);
+      spinningRef.current = false;
       return;
     }
 
@@ -114,7 +134,11 @@ const Wheel2 = ({ data, winnerTitle }) => {
     const winnerMid = winnerStart + data[winnerIndex].chance / 2;
     const winnerAngle = (winnerMid / 100) * 2 * Math.PI;
 
-    const totalRotation = 10 * 2 * Math.PI + (2 * Math.PI - winnerAngle);
+    // Çark kaldığı yerden devam eder (tekrar çevirmede başa sıçramaz)
+    const from = angleRef.current;
+    const fullTurn = 2 * Math.PI;
+    const target =
+      from - (from % fullTurn) + 10 * fullTurn + (fullTurn - winnerAngle);
 
     let start = null;
     const duration = 3500;
@@ -123,26 +147,49 @@ const Wheel2 = ({ data, winnerTitle }) => {
       if (!start) start = timestamp;
       const progress = Math.min((timestamp - start) / duration, 1);
       const easeOut = 1 - Math.pow(1 - progress, 3);
-      const currentAngle = totalRotation * easeOut;
-      setAngle(currentAngle);
+      updateAngle(from + (target - from) * easeOut);
 
       if (progress < 1) {
         requestAnimationFrame(animate);
       } else {
-        setIsSpinning(false);
+        spinningRef.current = false;
+        if (onFinish) onFinish(winnerTitle);
       }
     };
 
     requestAnimationFrame(animate);
   };
 
+  // Yavaş, kendi kendine dönen görünüm (tıklanamaz vitrin çarkı)
   useEffect(() => {
-    spinWheel();
+    if (!idle) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    let frame;
+    let last = null;
+    const tick = (timestamp) => {
+      if (last !== null && !spinningRef.current) {
+        updateAngle(angleRef.current + (timestamp - last) * 0.00015);
+      }
+      last = timestamp;
+      frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+
+    return () => cancelAnimationFrame(frame);
+  }, [idle]);
+
+  useEffect(() => {
+    if (autoSpin) spinWheel();
   }, []);
+
+  useEffect(() => {
+    if (spinKey > 0) spinWheel();
+  }, [spinKey]);
 
   return (
     <div
-      className="mt-8 z-10"
+      className={`${className} z-10`}
       style={{ textAlign: 'center', position: 'relative', width: 300 }}
     >
       <CarkBorder />
