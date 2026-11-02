@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
+const API_URL =
+  process.env.API_INTERNAL_URL || process.env.NEXT_PUBLIC_BASE_URL;
+
 export async function middleware(request: NextRequest) {
   const token = request.cookies.get('token')?.value;
 
@@ -8,7 +11,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/giris-yap', request.url));
   }
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/company/me`,
+    `${API_URL}/company/me`,
     {
       headers: { Authorization: `Bearer ${token}` },
     }

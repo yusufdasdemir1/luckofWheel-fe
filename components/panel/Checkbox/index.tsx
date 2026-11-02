@@ -32,15 +32,15 @@ const Checkbox = ({
       <div
         className={cn(
           'flex items-center justify-center',
-          'border border-[#E8E8E8] rounded shadow-md',
+          'border border-slate-300 bg-white rounded-md transition-colors',
           'aspect-square',
-          { 'border-primary/50': value },
+          { '!border-primary !bg-primary/10': value },
           className,
           size
         )}
       >
         <BsCheckLg
-          size={20}
+          size={14}
           className={cn('text-primary hidden group-hover:block', {
             '!block': value,
           })}
@@ -48,7 +48,7 @@ const Checkbox = ({
       </div>
 
       {title && (
-        <span className="text-[#4C4C4C] text-sm font-medium">{title}</span>
+        <span className="text-ck-ink text-sm font-medium">{title}</span>
       )}
     </div>
   );

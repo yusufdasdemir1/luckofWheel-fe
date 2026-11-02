@@ -1,6 +1,7 @@
 'use client';
 import { useAuthStore } from '@/stores/authStore';
 import IUser from '@/types/IUser';
+import { clearAuthCookie } from '@/utils/authCookie';
 import { useEffect } from 'react';
 
 interface Props {
@@ -12,8 +13,7 @@ const AuthProviver = ({ user }: Props) => {
 
   useEffect(() => {
     if (!user) {
-      document.cookie =
-        'token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
+      clearAuthCookie();
       setUser(undefined);
       return;
     }

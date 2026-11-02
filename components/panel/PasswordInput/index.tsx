@@ -15,8 +15,8 @@ const PasswordInput = ({ label, error, placeholder, ...args }: Props) => {
   const [type, setType] = useState<'password' | 'text'>('password');
 
   return (
-    <div className="w-full flex flex-col gap-1">
-      {label && <span className="text-sm text-black/80">{label}</span>}
+    <div className="w-full flex flex-col gap-1.5">
+      {label && <span className="text-sm font-medium text-ck-ink">{label}</span>}
 
       <div className="relative">
         <Input
@@ -41,7 +41,7 @@ const PasswordInput = ({ label, error, placeholder, ...args }: Props) => {
         </div>
       </div>
 
-      {error && <span className="text-xs italic text-red-400">{error}</span>}
+      {error && <span className="text-xs text-red-500">{error}</span>}
     </div>
   );
 };

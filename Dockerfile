@@ -22,6 +22,18 @@ COPY . .
 # bu yüzden runtime'da değil build arg olarak verilmelidir.
 ARG NEXT_PUBLIC_BASE_URL
 ENV NEXT_PUBLIC_BASE_URL=${NEXT_PUBLIC_BASE_URL}
+
+# Sitenin herkese açık adresi (canonical, sitemap, Open Graph), build'e gömülür.
+ARG NEXT_PUBLIC_SITE_URL
+ENV NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL}
+
+# Salon başvurularının düşeceği WhatsApp numarası (905xxxxxxxxx), build'e gömülür.
+ARG NEXT_PUBLIC_WHATSAPP_NUMBER
+ENV NEXT_PUBLIC_WHATSAPP_NUMBER=${NEXT_PUBLIC_WHATSAPP_NUMBER}
+
+# Sunucu tarafı (SSR/middleware) için opsiyonel iç adres; boşsa NEXT_PUBLIC_BASE_URL kullanılır.
+ARG API_INTERNAL_URL
+ENV API_INTERNAL_URL=${API_INTERNAL_URL}
 ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN pnpm build
@@ -34,6 +46,8 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
+ARG API_INTERNAL_URL
+ENV API_INTERNAL_URL=${API_INTERNAL_URL}
 
 RUN addgroup --system --gid 1001 nodejs \
     && adduser --system --uid 1001 nextjs

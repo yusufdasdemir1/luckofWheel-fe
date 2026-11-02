@@ -4,7 +4,7 @@ import classnames from 'classnames/bind';
 
 const cn = classnames.bind({
   small: 'h-[35px] text-xs',
-  medium: 'h-[45px] text-sm',
+  medium: 'h-[45px] text-base md:text-sm',
   large: 'h-[55px]',
 });
 
@@ -24,14 +24,14 @@ const Input = ({
   ...args
 }: Props) => {
   return (
-    <div className="w-full flex flex-col gap-1">
-      {label && <span className="text-sm text-black/90">{label}</span>}
+    <div className="w-full flex flex-col gap-1.5">
+      {label && <span className="text-sm font-medium text-ck-ink">{label}</span>}
       <input
         placeholder={placeholder || label}
         className={cn(
           'w-full px-3 resize-none bg-white',
-          'rounded-md box-border border border-[#AEAEAE]',
-          'outline-none focus:border-primary',
+          'rounded-xl box-border border border-slate-300',
+          'outline-none transition-colors focus:border-primary focus:ring-4 focus:ring-primary/10',
           'disabled:opacity-50 disabled:cursor-not-allowed',
           'read-only:opacity-50 read-only:cursor-not-allowed',
           { '!border-red-400': error },
@@ -41,7 +41,7 @@ const Input = ({
         spellCheck="false"
         {...args}
       />
-      {error && <span className="text-xs italic text-red-400">{error}</span>}
+      {error && <span className="text-xs text-red-500">{error}</span>}
     </div>
   );
 };

@@ -2,19 +2,20 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { SITE_LOGO_RATIO, SITE_LOGO_URL } from '@/utils/siteLogo';
 import Button from '../panel/Button';
 
 const SiteHeader = () => {
   return (
-    <header className="w-full border-b border-slate-200 bg-slate-50 h-[80px] flex items-center">
+    <header className="w-full border-b border-white/10 bg-ck-night h-[80px] flex items-center">
       <div className="container flex items-center flex-1 justify-between">
         <Link href="/">
           <Image
             loader={({ src }) => src}
-            src="https://api.cevirkazan360.com/public/images/logo.png"
-            width={250}
-            height={60}
-            alt="Logo"
+            src={SITE_LOGO_URL}
+            width={Math.round(48 * SITE_LOGO_RATIO)}
+            height={48}
+            alt="Çevir Kazan 360"
           />
         </Link>
 

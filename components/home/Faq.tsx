@@ -4,11 +4,19 @@ import Reveal from './Reveal';
 const QUESTIONS = [
   {
     q: 'Çarkı kaç kez çevirebilirim?',
-    a: 'Her salonda telefon numarası başına bir çevirme hakkın var.',
+    a: 'Her salonda telefon numarası başına bir çevirme hakkın var. Çarkın ne kadar sürede yeniden dönebileceğini her salon sahibi kendi belirlediği aralıkla ayarlar. Bu süre dolunca aynı salonda tekrar çevirebilirsin.',
   },
   {
     q: 'Kazandığım hediyeyi nasıl kullanırım?',
     a: 'Çarkı çevirdikten sonra tarih ve saat seçip randevunu oluştur. Randevunda kazandığın hediyeyi salona göster.',
+  },
+  {
+    q: 'Salon eklemenin ücreti nedir?',
+    a: 'Fiyat, salonunun ihtiyacına göre birlikte konuşularak belirlenir ve aylık abonelik şeklinde ilerler. Başvuru formunu doldur, sana dönüş yapıp detayları anlatalım.',
+  },
+  {
+    q: 'Salonumu nasıl eklerim?',
+    a: 'Salon başvuru formunu doldur; bilgilerin hazır bir mesajla WhatsApp üzerinden bize ulaşır. Sana dönüş yapıp salonunun sayfasını ve çarkını birlikte kuralım.',
   },
 ];
 
@@ -23,7 +31,7 @@ const Faq = () => {
           {QUESTIONS.map((item) => (
             <details
               key={item.q}
-              className="bg-white border-[1.5px] border-ck-line rounded-[20px] px-6 py-5"
+              className="bg-ck-surface border-[1.5px] border-ck-line rounded-[20px] px-6 py-5"
             >
               <summary className="cursor-pointer font-bold text-[17px] min-h-6">
                 {item.q}

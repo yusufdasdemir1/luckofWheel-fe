@@ -1,13 +1,33 @@
 import KazanilanHediyelerContainer from '@/containers/KazanilanHediyelerContainer';
-import { fetchSpinHistory } from '@/services/hediyeCarkiService';
+import {
+  fetchSpinHistory,
+  fetchWinStatistics,
+} from '@/services/hediyeCarkiService';
+import IPage, { EMPTY_PAGE } from '@/types/IPage';
+import { listQuery } from '@/utils/listQuery';
 import React from 'react';
 
-const Page = async () => {
-  const [err, data] = await fetchSpinHistory();
+const Page = async ({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) => {
+  const query = listQuery(await searchParams, ['page', 'q', 'is_used'], 12);
 
-  const listArray = Array.isArray(data) ? data : [];
+  const [[, data], [statsErr, stats]] = await Promise.all([
+    fetchSpinHistory(query),
+    fetchWinStatistics(),
+  ]);
 
-  return <KazanilanHediyelerContainer list={listArray} />;
+  const pageData: IPage<any> =
+    data && Array.isArray(data.results) ? data : EMPTY_PAGE;
+
+  return (
+    <KazanilanHediyelerContainer
+      page={pageData}
+      stats={statsErr ? null : stats}
+    />
+  );
 };
 
 export default Page;

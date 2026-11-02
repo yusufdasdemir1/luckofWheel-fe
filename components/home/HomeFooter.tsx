@@ -1,3 +1,5 @@
+import { SITE_LOGO_DARK_RATIO, SITE_LOGO_DARK_URL } from '@/utils/siteLogo';
+import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
@@ -12,33 +14,38 @@ const LEGAL = [
 
 const HomeFooter = () => {
   return (
-    <footer className="bg-ck-ink text-ck-muted-dark pb-16 md:pb-0">
+    <footer className="bg-ck-night text-ck-muted-dark pb-16 md:pb-0">
       <div className="max-w-[1240px] mx-auto px-6 pt-14 pb-9 grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-8">
         <div className="flex flex-col gap-3">
-          <span className="font-[family-name:var(--font-bricolage)] font-extrabold text-xl text-white">
-            Çevir Kazan <span className="text-ck-yellow">360</span>
-          </span>
+          <Image
+            src={SITE_LOGO_DARK_URL}
+            width={Math.round(52 * SITE_LOGO_DARK_RATIO)}
+            height={52}
+            alt="Çevir Kazan 360"
+            unoptimized
+            className="block self-start h-[52px] w-auto"
+          />
           <span className="text-sm leading-relaxed">
-            Kuaförler için çark kampanyası ve randevu platformu.
+            Güzellik ve bakım salonları için çark kampanyası ve randevu platformu.
           </span>
         </div>
         <div className="flex flex-col gap-2.5 text-sm">
           <span className="text-white font-bold">Müşteriler</span>
-          <a href="#salonlar" className={LINK}>
+          <Link href="/#salonlar" className={LINK}>
             Salonlar
-          </a>
-          <a href="#cark" className={LINK}>
+          </Link>
+          <Link href="/#cark" className={LINK}>
             Çarkı dene
-          </a>
-          <a href="#nasil" className={LINK}>
+          </Link>
+          <Link href="/#nasil" className={LINK}>
             Nasıl çalışır
-          </a>
+          </Link>
         </div>
         <div className="flex flex-col gap-2.5 text-sm">
           <span className="text-white font-bold">Kuaförler</span>
-          <a href="#kuafor" className={LINK}>
+          <Link href="/salon-basvuru" className={LINK}>
             Salonunu ekle
-          </a>
+          </Link>
           <Link href="/giris-yap" className={LINK}>
             Salon girişi
           </Link>
@@ -50,7 +57,7 @@ const HomeFooter = () => {
           ))}
         </div>
       </div>
-      <div className="max-w-[1240px] mx-auto px-6 pt-5 pb-8 border-t border-[#2C2731] text-[13px]">
+      <div className="max-w-[1240px] mx-auto px-6 pt-5 pb-8 border-t border-[#7C2338] text-[13px]">
         &copy; {new Date().getFullYear()} cevirkazan360.com · Tüm hakları
         saklıdır.
       </div>

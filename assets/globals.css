@@ -4,20 +4,27 @@
 @theme {
   --font-poppins: 'Poppins', sans-serif;
 
-  --color-primary: #2389ff;
+  --color-primary: #8e1330;
 
-  --color-ck-cream: #f6f1ea;
-  --color-ck-ink: #16131a;
-  --color-ck-ink-soft: #221e27;
-  --color-ck-ink-line: #3a3440;
-  --color-ck-red: #e2492f;
-  --color-ck-red-dark: #c2381f;
-  --color-ck-yellow: #f2b33d;
-  --color-ck-line: #e6ded3;
-  --color-ck-input: #d9cfc2;
-  --color-ck-muted: #4a4450;
-  --color-ck-muted-dark: #bdb6c6;
+  --color-ck-cream: #faf6f1;
+  --color-ck-surface: #f2eae2;
+  --color-ck-ink: #2a1a1c;
+  --color-ck-ink-soft: #3a2528;
+  --color-ck-ink-line: #54393d;
+  --color-ck-night: #560e22;
+  --color-ck-night-soft: #6a1630;
+  --color-ck-night-line: #8a2842;
+  --color-ck-brand: #8e1330;
+  --color-ck-brand-dark: #6b0e24;
+  --color-ck-error: #b42318;
+  --color-ck-accent: #c9a35b;
+  --color-ck-coral: #ee4b58;
+  --color-ck-line: #e4d8cc;
+  --color-ck-input: #d8c9bc;
+  --color-ck-muted: #6b5a5c;
+  --color-ck-muted-dark: #cdbbbd;
   --color-ck-wa: #25d366;
+  --color-ck-online: #34d27b;
 
   --color-success-alert: #4ca690;
   --color-bg-success-alert: #dbede9;
@@ -88,10 +95,10 @@ html {
 @keyframes ck-pulse {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(242, 179, 61, 0.55);
+    box-shadow: 0 0 0 0 rgba(250, 246, 241, 0.55);
   }
   70% {
-    box-shadow: 0 0 0 18px rgba(242, 179, 61, 0);
+    box-shadow: 0 0 0 18px rgba(250, 246, 241, 0);
   }
 }
 
@@ -115,7 +122,7 @@ html {
 }
 
 .ck-marquee {
-  animation: ck-marquee 28s linear infinite;
+  animation: ck-marquee 45s linear infinite;
 }
 
 .ck-pulse {
@@ -159,5 +166,251 @@ html {
 
   .ck-reveal-in {
     transition: none;
+  }
+}
+
+/* Butonlar: yumuşak geçiş + hafif yukarı kalkma (devre dışı butonlarda yok) */
+.ck-btn {
+  transition: transform 0.2s ease, box-shadow 0.2s ease,
+    background-color 0.2s ease, border-color 0.2s ease, filter 0.2s ease;
+}
+
+.ck-btn:not(:disabled):hover {
+  transform: translateY(-2px);
+}
+
+.ck-btn:not(:disabled):active {
+  transform: translateY(0);
+}
+
+.ck-btn:focus-visible {
+  outline: 2px solid var(--color-ck-accent);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ck-btn {
+    transition: none;
+  }
+
+  .ck-btn:not(:disabled):hover {
+    transform: none;
+  }
+}
+
+/* ---- Hediye kutusu: ödül düşer, kapak açılır, parıltılar saçılır ---- */
+@keyframes ck-drop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% - 150px)) scale(1);
+  }
+  15% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+    transform: translate(-50%, calc(-50% - 4px)) scale(0.85);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.25);
+  }
+}
+
+@keyframes ck-lid {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  45% {
+    transform: translateY(-11px) rotate(-26deg);
+  }
+  100% {
+    transform: translateY(-7px) rotate(-18deg);
+  }
+}
+
+@keyframes ck-wiggle {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-7deg);
+  }
+  75% {
+    transform: rotate(7deg);
+  }
+}
+
+@keyframes ck-burst {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--tx), var(--ty)) scale(0.3);
+  }
+}
+
+@keyframes ck-reveal-text {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ck-drop {
+  animation: ck-drop 0.9s cubic-bezier(0.55, 0, 0.75, 0.4) both;
+}
+
+.ck-lid-open {
+  animation: ck-lid 0.5s 0.75s ease-out both;
+}
+
+.ck-wiggle {
+  animation: ck-wiggle 0.45s ease-in-out infinite;
+}
+
+.ck-burst {
+  animation: ck-burst 0.8s 0.8s ease-out both;
+}
+
+.ck-reveal-text {
+  animation: ck-reveal-text 0.5s 1s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ck-drop,
+  .ck-burst {
+    display: none;
+  }
+
+  .ck-wiggle {
+    animation: none;
+  }
+
+  .ck-lid-open {
+    animation: none;
+    transform: translateY(-7px) rotate(-18deg);
+  }
+
+  .ck-reveal-text {
+    animation: none;
+  }
+}
+
+/* ---- Reveal yönleri ve arka plan parıltısı ---- */
+.ck-reveal-pre.ck-reveal-left {
+  transform: translateX(-48px);
+}
+
+.ck-reveal-pre.ck-reveal-right {
+  transform: translateX(48px);
+}
+
+.ck-reveal-pre.ck-reveal-scale {
+  transform: scale(0.85);
+}
+
+@keyframes ck-glow {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.08);
+  }
+}
+
+.ck-glow {
+  animation: ck-glow 5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ck-reveal-pre.ck-reveal-left,
+  .ck-reveal-pre.ck-reveal-right,
+  .ck-reveal-pre.ck-reveal-scale {
+    transform: none;
+  }
+
+  .ck-glow {
+    animation: none;
+  }
+}
+
+/* ---- Sayfa açılırken ekranda zaten görünen öğelerin girişi (JS beklemeden) ---- */
+@keyframes ck-enter-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ck-enter-left {
+  from {
+    opacity: 0;
+    transform: translateX(-48px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ck-enter-right {
+  from {
+    opacity: 0;
+    transform: translateX(48px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ck-enter-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.ck-enter-up {
+  animation: ck-enter-up 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.ck-enter-left {
+  animation: ck-enter-left 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.ck-enter-right {
+  animation: ck-enter-right 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.ck-enter-scale {
+  animation: ck-enter-scale 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ck-enter-up,
+  .ck-enter-left,
+  .ck-enter-right,
+  .ck-enter-scale {
+    animation: none;
   }
 }

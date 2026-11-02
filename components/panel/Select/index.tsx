@@ -83,18 +83,18 @@ const Select = ({
     >
       <div
         ref={selectRef}
-        className={cn('w-full flex flex-col gap-1', className)}
+        className={cn('w-full flex flex-col gap-1.5', className)}
       >
-        {label && <span className="text-sm text-purple">{label}</span>}
+        {label && <span className="text-sm font-medium text-ck-ink">{label}</span>}
 
         <div className="w-full relative">
           <div
             className={cn(
               'cursor-pointer bg-white',
               'w-full px-3 resize-none',
-              'rounded-md box-border border border-[#AEAEAE]',
-              'flex items-center',
-              'text-purple',
+              'rounded-xl box-border border border-slate-300',
+              'flex items-center text-ck-ink transition-colors',
+              show && 'border-primary ring-4 ring-primary/10',
               {
                 '!border-red-400': error,
                 'bg-slate-50': loading,
@@ -113,7 +113,7 @@ const Select = ({
                 'absolute right-2 top-3',
                 'transition-all duration-200',
                 'cursor-pointer',
-                'text-purple',
+                'text-slate-500',
                 {
                   'rotate-180': show,
                   '!top-2': size === 'small',
@@ -127,7 +127,7 @@ const Select = ({
               className={cn(
                 'absolute right-2 top-3',
                 'transition-all duration-200',
-                'text-purple',
+                'text-slate-500',
                 'animate-spin'
               )}
             />
@@ -144,7 +144,7 @@ const Select = ({
           </SelectList>
         </div>
 
-        {error && <span className="text-sm italic text-red-400">{error}</span>}
+        {error && <span className="text-xs text-red-500">{error}</span>}
       </div>
     </SelectContext.Provider>
   );

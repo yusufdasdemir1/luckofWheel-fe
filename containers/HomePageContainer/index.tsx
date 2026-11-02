@@ -1,4 +1,3 @@
-import ClosingCta from '@/components/home/ClosingCta';
 import DemoWheel from '@/components/home/DemoWheel';
 import Faq from '@/components/home/Faq';
 import ForSalons from '@/components/home/ForSalons';
@@ -8,15 +7,15 @@ import HomeNav from '@/components/home/HomeNav';
 import HowItWorks from '@/components/home/HowItWorks';
 import Marquee from '@/components/home/Marquee';
 import Salons from '@/components/home/Salons';
-import ICompany from '@/types/ICompany';
+import ICompanyPage from '@/types/ICompanyPage';
 import React from 'react';
 
 interface HomePageContainerProps {
-  list: ICompany[];
+  initial: ICompanyPage;
 }
 
-const HomePageContainer = ({ list = [] }: HomePageContainerProps) => {
-  const first = list[0];
+const HomePageContainer = ({ initial }: HomePageContainerProps) => {
+  const first = initial.results[0];
 
   return (
     <>
@@ -29,16 +28,15 @@ const HomePageContainer = ({ list = [] }: HomePageContainerProps) => {
         <Marquee />
         <HowItWorks />
         <DemoWheel />
-        <Salons list={list} />
+        <Salons initial={initial} />
         <ForSalons />
         <Faq />
-        <ClosingCta />
       </main>
       <HomeFooter />
 
       <a
         href="#cark"
-        className="md:hidden fixed bottom-4 left-4 right-4 z-30 bg-ck-yellow text-ck-ink no-underline font-bold text-base rounded-full min-h-12 flex items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,.35)]"
+        className="md:hidden fixed bottom-4 left-4 right-4 z-30 bg-ck-brand text-white no-underline font-bold text-base rounded-full min-h-12 flex items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,.35)] ck-btn hover:brightness-105"
       >
         Çarkı Dene
       </a>

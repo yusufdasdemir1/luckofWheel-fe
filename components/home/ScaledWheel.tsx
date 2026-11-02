@@ -47,7 +47,7 @@ const ScaledWheel = ({ maxSize, ...wheelProps }: ScaledWheelProps) => {
             transformOrigin: 'top left',
           }}
         >
-          <Wheel2 {...wheelProps} className="" />
+          <Wheel2 {...wheelProps} className="" quality={scale} />
         </div>
       </div>
     </div>

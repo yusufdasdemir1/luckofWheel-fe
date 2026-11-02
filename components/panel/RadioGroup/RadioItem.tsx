@@ -12,9 +12,9 @@ const RadioItem = ({ title, checked, onClick }: RadioItemProps) => {
   return (
     <button
       onClick={onClick}
-      className="flex gap-2 items-center cursor-pointer"
+      className="flex gap-2.5 items-center cursor-pointer bg-transparent border-0 p-0"
     >
-      <div className="w-[18px] h-[18px] rounded-full border border-primary relative">
+      <div className="w-[18px] h-[18px] min-w-[18px] rounded-full border-2 border-primary relative">
         <div
           className={cn(
             'w-[10px] h-[10px] bg-primary rounded-full transition-all duration-300',
@@ -27,7 +27,7 @@ const RadioItem = ({ title, checked, onClick }: RadioItemProps) => {
         ></div>
       </div>
 
-      <span className="text-purple font-medium">{title}</span>
+      <span className="text-sm text-ck-ink font-medium text-left">{title}</span>
     </button>
   );
 };

@@ -1,7 +1,18 @@
 'use client';
+import { apiErrorMessage } from '@/utils/apiError';
 import Button from '@/components/panel/Button';
+import {
+  Badge,
+  Card,
+  CardActions,
+  CardGrid,
+  EmptyState,
+  Field,
+  FieldGrid,
+  PageHeader,
+} from '@/components/panel/Card';
 import Input from '@/components/panel/Input';
-import Modal from '@/components/panel/Modal';
+import Modal, { ModalActions, ModalForm } from '@/components/panel/Modal';
 import Select from '@/components/panel/Select';
 import Textarea from '@/components/panel/Textarea';
 import {
@@ -58,7 +69,7 @@ const ServicesContainer = ({ list }: IServicesContainerProps) => {
         id: String(Date.now()),
         type: 'error',
         title: 'Hizmet Oluşturulamadı',
-        content: err.message || 'Bir hata oluştu, lütfen tekrar deneyin.',
+        content: apiErrorMessage(err, 'Bir hata oluştu, lütfen tekrar deneyin.'),
       });
     }
 
@@ -95,7 +106,7 @@ const ServicesContainer = ({ list }: IServicesContainerProps) => {
         id: String(Date.now()),
         type: 'error',
         title: 'Hizmet Güncellenemedi',
-        content: err.message || 'Bir hata oluştu, lütfen tekrar deneyin.',
+        content: apiErrorMessage(err, 'Bir hata oluştu, lütfen tekrar deneyin.'),
       });
     }
 
@@ -130,7 +141,7 @@ const ServicesContainer = ({ list }: IServicesContainerProps) => {
         id: String(Date.now()),
         type: 'error',
         title: 'Hizmet Silinemedi',
-        content: err.message || 'Bir hata oluştu, lütfen tekrar deneyin.',
+        content: apiErrorMessage(err, 'Bir hata oluştu, lütfen tekrar deneyin.'),
       });
     }
 
@@ -155,113 +166,106 @@ const ServicesContainer = ({ list }: IServicesContainerProps) => {
 
   return (
     <>
-      <div className="flex flex-col">
-        <h2 className="text-3xl font-semibold">Hizmet</h2>
-        <Button
-          size="small"
-          className="ml-auto mt-4"
-          color="green"
-          onClick={() => {
-            setShowCreateModal(true);
-            setMode('create');
-          }}
-        >
-          Yeni Ekle
-        </Button>
-      </div>
-
-      <div className="w-full flex flex-col gap-2 pb-64">
-        {list.map((item, index) => (
-          <div
-            key={index}
-            className="w-full flex flex-col gap-0.5 p-2 box-border bg-white border border-slate-200 rounded-md"
+      <PageHeader
+        title="Hizmetler"
+        description="Müşterilerin randevu alırken seçtiği hizmetler, fiyatları ve süreleri."
+        action={
+          <Button
+            size="small"
+            color="primary"
+            onClick={() => {
+              setShowCreateModal(true);
+              setMode('create');
+            }}
           >
-            <div className="flex flex-col gap-1 text-sm px-2 py-1 box-border">
-              <span className="inline-block w-[130px] min-w-[130px]">
-                Hizmet Adı:
-              </span>
-              <strong>{item.title}</strong>
-            </div>
+            + Yeni Ekle
+          </Button>
+        }
+      />
 
-            <div className="flex flex-col gap-1 text-sm px-2 py-1 box-border">
-              <span className="inline-block w-[130px] min-w-[130px]">
-                Açıklama:
-              </span>
-              <strong>{item.description}</strong>
-            </div>
+      <div className="pb-10">
+        {list.length === 0 ? (
+          <EmptyState
+            title="Henüz hizmet eklemedin"
+            text="Müşterilerin randevu alabilmesi için en az bir hizmet ekle."
+          />
+        ) : (
+          <CardGrid>
+            {list.map((item) => (
+              <Card key={item.id} tone={item.is_active ? 'wine' : 'slate'}>
+                <div className="flex items-start justify-between gap-3">
+                  <strong className="text-base text-ck-ink break-words min-w-0">
+                    {item.title}
+                  </strong>
+                  <Badge tone={item.is_active ? 'wine' : 'slate'}>
+                    {item.is_active ? 'Aktif' : 'Pasif'}
+                  </Badge>
+                </div>
 
-            <div className="flex flex-col gap-1 text-sm px-2 py-1 box-border">
-              <span className="inline-block w-[130px] min-w-[130px]">
-                Fiyat:
-              </span>
-              <strong>{item.price} TL</strong>
-            </div>
+                {item.description && (
+                  <p className="text-sm text-slate-500 m-0 break-words">
+                    {item.description}
+                  </p>
+                )}
 
-            <div className="flex flex-col gap-1 text-sm px-2 py-1 box-border">
-              <span className="inline-block w-[130px] min-w-[130px]">
-                Süre(Dakika):
-              </span>
-              <strong>{item.duration} Dakika</strong>
-            </div>
+                <FieldGrid>
+                  <Field label="Fiyat">{item.price} TL</Field>
+                  <Field label="Süre">{item.duration} dakika</Field>
+                </FieldGrid>
 
-            <div className="flex flex-col gap-1 text-sm px-2 py-1 box-border">
-              <span className="inline-block w-[130px] min-w-[130px]">
-                Durum:
-              </span>
-              <strong>{item.is_active ? 'Aktif' : 'Pasif'}</strong>
-            </div>
-
-            <div className="w-full flex items-center gap-2 mt-2">
-              <Button
-                className="!w-full"
-                size="xSmall"
-                color="green"
-                onClick={() => {
-                  setMode('edit');
-                  setData({
-                    id: item.id,
-                    title: item.title,
-                    is_active: item.is_active,
-                    description: item.description,
-                    price: item.price,
-                    duration: item.duration,
-                  });
-                  setShowCreateModal(true);
-                }}
-              >
-                Güncelle
-              </Button>
-              <Button
-                className="!w-full"
-                size="xSmall"
-                color="red"
-                onClick={() => {
-                  setMode('delete');
-                  setData({
-                    id: item.id,
-                    title: item.title,
-                    is_active: item.is_active,
-                    description: item.description,
-                    price: item.price,
-                    duration: item.duration,
-                  });
-                  setShowCreateModal(true);
-                }}
-              >
-                Sil
-              </Button>
-            </div>
-          </div>
-        ))}
+                <CardActions>
+                  <Button
+                    className="flex-1"
+                    size="small"
+                    color="primaryOutline"
+                    onClick={() => {
+                      setMode('edit');
+                      setData({
+                        id: item.id,
+                        title: item.title,
+                        is_active: item.is_active,
+                        description: item.description,
+                        price: item.price,
+                        duration: item.duration,
+                      });
+                      setShowCreateModal(true);
+                    }}
+                  >
+                    Güncelle
+                  </Button>
+                  <Button
+                    size="small"
+                    color="white"
+                    className="!text-red-500 hover:!bg-red-50"
+                    onClick={() => {
+                      setMode('delete');
+                      setData({
+                        id: item.id,
+                        title: item.title,
+                        is_active: item.is_active,
+                        description: item.description,
+                        price: item.price,
+                        duration: item.duration,
+                      });
+                      setShowCreateModal(true);
+                    }}
+                  >
+                    Sil
+                  </Button>
+                </CardActions>
+              </Card>
+            ))}
+          </CardGrid>
+        )}
       </div>
 
       <Modal
         size="xSmall"
+        title="Hizmet Oluştur"
         show={showCreateModal && mode === 'create'}
         onClose={() => setShowCreateModal(false)}
       >
-        <div className="w-full flex flex-col gap-4">
-          <h3 className="text-2xl font-semibold">Hizmet Oluştur</h3>
+        <ModalForm>
           <Input
             value={data.title}
             onChange={(e) => setData({ ...data, title: e.target.value })}
@@ -295,23 +299,31 @@ const ServicesContainer = ({ list }: IServicesContainerProps) => {
             label="Açıklama"
           />
 
-          <Button
-            color="green"
-            loading={loadings.includes('create')}
-            onClick={handleCreate}
-          >
-            Kaydet
-          </Button>
-        </div>
+          <ModalActions>
+            <Button
+              color="primaryOutline"
+              onClick={() => setShowCreateModal(false)}
+            >
+              Vazgeç
+            </Button>
+            <Button
+              color="primary"
+              loading={loadings.includes('create')}
+              onClick={handleCreate}
+            >
+              Kaydet
+            </Button>
+          </ModalActions>
+        </ModalForm>
       </Modal>
 
       <Modal
         size="xSmall"
+        title="Düzenle"
         show={showCreateModal && mode === 'edit'}
         onClose={() => setShowCreateModal(false)}
       >
-        <div className="w-full flex flex-col gap-4">
-          <h3 className="text-2xl font-semibold">Düzenle</h3>
+        <ModalForm>
           <Input
             value={data.title}
             onChange={(e) => setData({ ...data, title: e.target.value })}
@@ -345,38 +357,52 @@ const ServicesContainer = ({ list }: IServicesContainerProps) => {
             label="Açıklama"
           />
 
-          <Button
-            color="green"
-            loading={loadings.includes('edit')}
-            onClick={handleUpdate}
-          >
-            Güncelle
-          </Button>
-        </div>
+          <ModalActions>
+            <Button
+              color="primaryOutline"
+              onClick={() => setShowCreateModal(false)}
+            >
+              Vazgeç
+            </Button>
+            <Button
+              color="primary"
+              loading={loadings.includes('edit')}
+              onClick={handleUpdate}
+            >
+              Güncelle
+            </Button>
+          </ModalActions>
+        </ModalForm>
       </Modal>
 
       <Modal
         size="xSmall"
+        title="Silmek istediğine emin misin?"
         show={showCreateModal && mode === 'delete'}
         onClose={() => setShowCreateModal(false)}
       >
-        <div className="w-full flex flex-col gap-4">
-          <h3 className="text-2xl font-semibold">
-            Silmek istediğine emin misin?
-          </h3>
+        <ModalForm>
           <p>
-            <strong>"{data.title}"</strong> adlı hizmeti silmek üzeresiniz. Bu
+            <strong>&quot;{data.title}&quot;</strong> adlı hizmeti silmek üzeresiniz. Bu
             işlem geri alınamaz.
           </p>
 
-          <Button
-            color="red"
-            loading={loadings.includes('delete')}
-            onClick={handleDelete}
-          >
-            Sil
-          </Button>
-        </div>
+          <ModalActions>
+            <Button
+              color="primaryOutline"
+              onClick={() => setShowCreateModal(false)}
+            >
+              Vazgeç
+            </Button>
+            <Button
+              color="red"
+              loading={loadings.includes('delete')}
+              onClick={handleDelete}
+            >
+              Sil
+            </Button>
+          </ModalActions>
+        </ModalForm>
       </Modal>
     </>
   );

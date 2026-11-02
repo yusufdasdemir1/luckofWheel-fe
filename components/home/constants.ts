@@ -1,5 +1,7 @@
-export const SALON_APPLY_HREF = '/kayit-ol';
-export const HERO_VIDEO_SRC = '/videos/hero.mp4';
+export const SALON_APPLY_HREF = '/salon-basvuru';
+// backend'in public/images altındaki dosya yolu (imageUrl ile çözülür)
+export const HERO_VIDEO_WEBM = 'videos/hero.webm';
+export const HERO_VIDEO_FILE = 'videos/hero.mp4'; // webm oynatılamazsa yedek
 
 export const PRIZES = [
   '%10 İndirim',
@@ -13,25 +15,14 @@ export const PRIZES = [
 ];
 
 const heroColors = [
-  '#E2492F',
-  '#F2B33D',
-  '#16131A',
+  '#8E1330',
+  '#C9A35B',
+  '#560E22',
   '#FFFFFF',
-  '#E2492F',
-  '#F2B33D',
-  '#16131A',
+  '#8E1330',
+  '#C9A35B',
+  '#560E22',
   '#FFFFFF',
-];
-
-const demoColors = [
-  '#F2B33D',
-  '#FFFFFF',
-  '#16131A',
-  '#FFF3D6',
-  '#F2B33D',
-  '#FFFFFF',
-  '#16131A',
-  '#FFF3D6',
 ];
 
 const buildSlices = (colors: string[]) =>
@@ -44,4 +35,5 @@ const buildSlices = (colors: string[]) =>
   }));
 
 export const HERO_SLICES = buildSlices(heroColors);
-export const DEMO_SLICES = buildSlices(demoColors);
+// canlı deneme çarkı hero ile aynı paleti kullanır
+export const DEMO_SLICES = buildSlices(heroColors);

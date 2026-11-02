@@ -1,26 +1,26 @@
 'use client';
 import { createPortal } from 'react-dom';
-import classNames from 'classnames/bind';
-import { useEffect } from 'react';
-import { CgClose } from 'react-icons/cg';
+import classNames from 'classnames';
+import React, { useEffect } from 'react';
+import { IoClose } from 'react-icons/io5';
 
-const cn = classNames.bind({
-  xSmall: 'max-w-[90vw] md:max-w-[30vw]',
-  small: 'max-w-[45vw]',
-  medium: 'max-w-[60vw]',
-  large: 'max-w-[75vw]',
+// açık modallar; Esc sadece en üsttekini kapatır
+const openModals: symbol[] = [];
 
-  white: 'bg-[#FAFAFA]',
-  lightPurple: 'bg-[#F7F6FD]',
-});
+const SIZES = {
+  xSmall: 'sm:max-w-[440px]',
+  small: 'sm:max-w-[540px]',
+  medium: 'sm:max-w-[680px]',
+  large: 'sm:max-w-[900px]',
+};
 
 interface IModal {
   show?: boolean;
   onClose?: () => void;
   children?: React.ReactNode;
   title?: string;
-  size?: 'xSmall' | 'small' | 'medium' | 'large';
-  color?: 'white' | 'lightPurple';
+  description?: React.ReactNode;
+  size?: keyof typeof SIZES;
 }
 
 const Modal = ({
@@ -28,45 +28,91 @@ const Modal = ({
   onClose,
   children,
   title,
+  description,
   size = 'medium',
-  color = 'white',
 }: IModal) => {
   useEffect(() => {
     document.body.style.overflow = show ? 'hidden' : 'unset';
-  }, [show]);
+    if (!show) return;
+
+    const id = Symbol('modal');
+    openModals.push(id);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && openModals[openModals.length - 1] === id) {
+        onClose?.();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      openModals.splice(openModals.indexOf(id), 1);
+      // üstte başka modal açıksa kaydırma kilidi kalsın
+      document.body.style.overflow = openModals.length ? 'hidden' : 'unset';
+    };
+  }, [show, onClose]);
 
   const element = (
-    <>
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
       <div
-        className="w-full h-full fixed top-0 left-0 bg-black/40 backdrop-blur-md bg-opacity-50 cursor-pointer"
+        className="absolute inset-0 bg-black/50 backdrop-blur-[2px] cursor-pointer"
         onClick={onClose}
-      ></div>
+        aria-hidden="true"
+      />
 
       <div
-        className={cn(
-          'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2',
-          'w-full max-h-[90vh]',
-          'p-6 box-border rounded-2xl',
-          'bg-[#F7F6FD]',
-          'flex flex-col gap-4',
-          size,
-          color
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
+        className={classNames(
+          'relative w-full max-h-[92vh] overflow-y-auto box-border',
+          'bg-white border border-ck-line shadow-2xl',
+          'rounded-t-3xl sm:rounded-2xl',
+          'flex flex-col gap-5 p-5 pt-6 sm:p-6 sm:pt-7',
+          SIZES[size],
         )}
       >
-        <CgClose
-          className="absolute top-4 right-4 text-black cursor-pointer"
-          size={26}
-          onClick={onClose}
+        <span
+          aria-hidden="true"
+          className="absolute inset-x-0 top-0 h-1 bg-primary"
         />
 
-        <h3 className="text-black font-semibold text-2xl">{title}</h3>
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            {title && (
+              <h3 className="m-0 text-xl font-semibold text-ck-ink">{title}</h3>
+            )}
+            {description && (
+              <p className="m-0 mt-1 text-sm text-slate-500">{description}</p>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Kapat"
+            className="shrink-0 -mr-1.5 -mt-1.5 w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100 hover:text-ck-ink bg-transparent border-0 cursor-pointer transition-colors"
+          >
+            <IoClose size={22} />
+          </button>
+        </div>
 
         {children}
       </div>
-    </>
+    </div>
   );
 
   return show && createPortal(element, document.body);
 };
+
+// Form gövdesi: alanlar arası tutarlı boşluk
+export const ModalForm = ({ children }: { children: React.ReactNode }) => (
+  <div className="w-full flex flex-col gap-4">{children}</div>
+);
+
+// Alt aksiyonlar: vazgeç + ana işlem
+export const ModalActions = ({ children }: { children: React.ReactNode }) => (
+  <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-4 mt-1 border-t border-slate-100 [&>button]:w-full sm:[&>button]:w-auto sm:[&>button]:min-w-[120px]">
+    {children}
+  </div>
+);
 
 export default Modal;
