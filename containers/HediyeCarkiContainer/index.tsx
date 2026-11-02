@@ -1,7 +1,18 @@
 'use client';
+import { apiErrorMessage } from '@/utils/apiError';
 import Button from '@/components/panel/Button';
+import {
+  Badge,
+  Card,
+  CardActions,
+  CardGrid,
+  EmptyState,
+  Field,
+  FieldGrid,
+  PageHeader,
+} from '@/components/panel/Card';
 import Input from '@/components/panel/Input';
-import Modal from '@/components/panel/Modal';
+import Modal, { ModalActions, ModalForm } from '@/components/panel/Modal';
 import Select from '@/components/panel/Select';
 import Textarea from '@/components/panel/Textarea';
 import {
@@ -59,7 +70,7 @@ const HediyeCarkiContainer = ({ list }: IHediyeCarkiContainerProps) => {
         id: String(Date.now()),
         type: 'error',
         title: 'Hediye Çarkı Oluşturulamadı',
-        content: err.message || 'Bir hata oluştu, lütfen tekrar deneyin.',
+        content: apiErrorMessage(err, 'Bir hata oluştu, lütfen tekrar deneyin.'),
       });
     }
 
@@ -134,7 +145,7 @@ const HediyeCarkiContainer = ({ list }: IHediyeCarkiContainerProps) => {
         id: String(Date.now()),
         type: 'error',
         title: 'Hediye Çarkı Silinemedi',
-        content: err.message || 'Bir hata oluştu, lütfen tekrar deneyin.',
+        content: apiErrorMessage(err, 'Bir hata oluştu, lütfen tekrar deneyin.'),
       });
     }
 
@@ -159,143 +170,141 @@ const HediyeCarkiContainer = ({ list }: IHediyeCarkiContainerProps) => {
 
   return (
     <>
-      <div className="flex flex-col">
-        <h2 className="text-3xl font-semibold">Hediye Çarkı</h2>
-        <Button
-          size="small"
-          className="ml-auto mt-4"
-          color="green"
-          onClick={() => {
-            setShowCreateModal(true);
-            setMode('create');
-          }}
-        >
-          Yeni Ekle
-        </Button>
-      </div>
+      <PageHeader
+        title="Hediye Çarkı"
+        description="Çarkta çıkabilecek hediyeler ve kazanma şansları."
+        action={
+          <Button
+            size="small"
+            color="primary"
+            onClick={() => {
+              setShowCreateModal(true);
+              setMode('create');
+            }}
+          >
+            + Yeni Ekle
+          </Button>
+        }
+      />
 
-      <p className="p-3 box-border rounded-md border-orange-300 bg-orange-100 text-orange-500">
-        Toplam yüzde oranı 100% olmalıdır. Aksi takdirde hediye çarkı çalışmaz.
-        100%'e tamamlamak için <strong>"Kaybettiniz!"</strong> hediyesini
-        kullanabilirsiniz.
+      <p className="m-0 p-3.5 box-border rounded-xl border border-amber-200 bg-amber-50 text-sm text-amber-700">
+        Toplam yüzde oranı <strong>100%</strong> olmalıdır. Aksi takdirde hediye
+        çarkı çalışmaz. 100%&apos;e tamamlamak için{' '}
+        <strong>&quot;Kaybettiniz!&quot;</strong> hediyesini kullanabilirsiniz.
       </p>
 
-      <div className="w-full flex flex-col gap-2 pb-64">
-        {list.map((item, index) => (
-          <div
-            key={index}
-            className="w-full flex flex-col gap-0.5 p-2 box-border bg-white border border-slate-200 rounded-md"
-          >
-            <div className="flex flex-col gap-1 text-sm px-2 py-1 box-border">
-              <span className="inline-block w-[130px] min-w-[130px]">
-                Hediye Adı:
-              </span>
-              <strong>{item.title}</strong>
-            </div>
-
-            <div className="flex flex-col gap-1 text-sm px-2 py-1 box-border">
-              <span className="inline-block w-[130px] min-w-[130px]">
-                Açıklama:
-              </span>
-              <strong className="text-black/70 font-medium">
-                {item.description}
-              </strong>
-            </div>
-
-            <div className="flex flex-col gap-1 text-sm px-2 py-1 box-border">
-              <span className="inline-block w-[130px] min-w-[130px]">
-                Şans:
-              </span>
-              <strong>{(item.chance * 100).toFixed(2)}%</strong>
-            </div>
-
-            {item.gift_color && (
-              <div className="flex flex-col gap-1 text-sm px-2 py-1 box-border">
-                <span className="inline-block w-[130px] min-w-[130px]">
-                  Renk:
-                </span>
-                <div
-                  className="w-4 h-4 rounded-full"
-                  style={{
-                    backgroundColor: item.gift_color,
-                  }}
-                ></div>
-              </div>
-            )}
-
-            <div className="flex flex-col gap-1 text-sm px-2 py-1 box-border">
-              <span className="inline-block w-[130px] min-w-[130px]">
-                Durum:
-              </span>
-              <strong>{item.is_active ? 'Aktif' : 'Pasif'}</strong>
-            </div>
-
-            <div className="w-full flex items-center gap-2 mt-2">
-              <Button
-                className="!w-full"
-                size="xSmall"
-                color="green"
-                onClick={() => {
-                  setMode('edit');
-                  setData({
-                    id: item.id,
-                    title: item.title,
-                    is_active: item.is_active,
-                    chance: item.chance * 100,
-                    description: item.description,
-                    gift_color: item.gift_color,
-                  });
-                  setShowCreateModal(true);
-                }}
+      <div className="pb-10">
+        {list.length === 0 ? (
+          <EmptyState
+            title="Henüz hediye eklemedin"
+            text="Çarkın dönebilmesi için hediyeler ekle."
+          />
+        ) : (
+          <CardGrid equal>
+            {list.map((item, index) => (
+              <Card
+                key={item.id ?? index}
+                tone={item.is_active ? 'wine' : 'slate'}
               >
-                Güncelle
-              </Button>
-              <Button
-                className="!w-full"
-                size="xSmall"
-                color="red"
-                onClick={() => {
-                  setMode('delete');
-                  setData({
-                    id: item.id,
-                    title: item.title,
-                    is_active: item.is_active,
-                    chance: item.chance * 100,
-                    description: item.description,
-                    gift_color: '',
-                  });
-                  setShowCreateModal(true);
-                }}
-              >
-                Sil
-              </Button>
-            </div>
-          </div>
-        ))}
+                <div className="flex items-start gap-3">
+                  <span
+                    aria-hidden="true"
+                    className="w-4 h-4 min-w-4 mt-1 rounded-full shadow border border-slate-200"
+                    style={{ backgroundColor: item.gift_color || '#cbd5e1' }}
+                  />
+                  <strong
+                    title={item.title}
+                    className="text-base leading-6 text-ck-ink break-words min-w-0 flex-1 min-h-12"
+                  >
+                    {item.title}
+                  </strong>
+                  <Badge tone={item.is_active ? 'wine' : 'slate'}>
+                    {item.is_active ? 'Aktif' : 'Pasif'}
+                  </Badge>
+                </div>
+
+                {/* açıklama olsun olmasın aynı yükseklik: 2 satır ayrılır */}
+                <p
+                  title={item.description || undefined}
+                  className="text-sm text-slate-500 m-0 break-words line-clamp-2 min-h-10"
+                >
+                  {item.description}
+                </p>
+
+                <FieldGrid>
+                  <Field label="Kazanma şansı">
+                    {(item.chance * 100).toFixed(2)}%
+                  </Field>
+                </FieldGrid>
+
+                <CardActions>
+                  <Button
+                    className="flex-1"
+                    size="small"
+                    color="primaryOutline"
+                    onClick={() => {
+                      setMode('edit');
+                      setData({
+                        id: item.id,
+                        title: item.title,
+                        is_active: item.is_active,
+                        chance: item.chance * 100,
+                        description: item.description,
+                        gift_color: item.gift_color,
+                      });
+                      setShowCreateModal(true);
+                    }}
+                  >
+                    Güncelle
+                  </Button>
+                  <Button
+                    size="small"
+                    color="white"
+                    className="!text-red-500 hover:!bg-red-50"
+                    onClick={() => {
+                      setMode('delete');
+                      setData({
+                        id: item.id,
+                        title: item.title,
+                        is_active: item.is_active,
+                        chance: item.chance * 100,
+                        description: item.description,
+                        gift_color: '',
+                      });
+                      setShowCreateModal(true);
+                    }}
+                  >
+                    Sil
+                  </Button>
+                </CardActions>
+              </Card>
+            ))}
+          </CardGrid>
+        )}
       </div>
 
       <Modal
         size="xSmall"
+        title="Hediye Çarkı Oluştur"
         show={showCreateModal && mode === 'create'}
         onClose={() => setShowCreateModal(false)}
       >
-        <div className="w-full flex flex-col gap-4">
-          <h3 className="text-2xl font-semibold">Hediye Çarkı Oluştur</h3>
+        <ModalForm>
           <Input
             value={data.title}
             onChange={(e) => setData({ ...data, title: e.target.value })}
-            placeholder="Hediye Adı"
+            label="Hediye Adı"
           />
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-end gap-2">
             <Input
               value={data.chance}
               onChange={(e) =>
                 setData({ ...data, chance: Number(e.target.value) })
               }
-              placeholder="Şans (%)"
+              label="Şans (%)"
             />
-            <span className="text-xl">%</span>
+            <span className="text-xl pb-2.5 text-slate-500">%</span>
           </div>
 
           <Select
@@ -317,41 +326,49 @@ const HediyeCarkiContainer = ({ list }: IHediyeCarkiContainerProps) => {
           <Textarea
             value={data.description}
             onChange={(e) => setData({ ...data, description: e.target.value })}
-            placeholder="Açıklama"
+            label="Açıklama"
           />
 
-          <Button
-            color="green"
-            loading={loadings.includes('create')}
-            onClick={handleCreate}
-          >
-            Kaydet
-          </Button>
-        </div>
+          <ModalActions>
+            <Button
+              color="primaryOutline"
+              onClick={() => setShowCreateModal(false)}
+            >
+              Vazgeç
+            </Button>
+            <Button
+              color="primary"
+              loading={loadings.includes('create')}
+              onClick={handleCreate}
+            >
+              Kaydet
+            </Button>
+          </ModalActions>
+        </ModalForm>
       </Modal>
 
       <Modal
         size="xSmall"
+        title="Düzenle"
         show={showCreateModal && mode === 'edit'}
         onClose={() => setShowCreateModal(false)}
       >
-        <div className="w-full flex flex-col gap-4">
-          <h3 className="text-2xl font-semibold">Düzenle</h3>
+        <ModalForm>
           <Input
             value={data.title}
             onChange={(e) => setData({ ...data, title: e.target.value })}
-            placeholder="Hediye Adı"
+            label="Hediye Adı"
           />
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-end gap-2">
             <Input
               value={data.chance}
               onChange={(e) =>
                 setData({ ...data, chance: Number(e.target.value) })
               }
-              placeholder="Şans (%)"
+              label="Şans (%)"
             />
-            <span className="text-xl">%</span>
+            <span className="text-xl pb-2.5 text-slate-500">%</span>
           </div>
 
           <Select
@@ -373,41 +390,55 @@ const HediyeCarkiContainer = ({ list }: IHediyeCarkiContainerProps) => {
           <Textarea
             value={data.description}
             onChange={(e) => setData({ ...data, description: e.target.value })}
-            placeholder="Açıklama"
+            label="Açıklama"
           />
 
-          <Button
-            color="green"
-            loading={loadings.includes('edit')}
-            onClick={handleUpdate}
-          >
-            Güncelle
-          </Button>
-        </div>
+          <ModalActions>
+            <Button
+              color="primaryOutline"
+              onClick={() => setShowCreateModal(false)}
+            >
+              Vazgeç
+            </Button>
+            <Button
+              color="primary"
+              loading={loadings.includes('edit')}
+              onClick={handleUpdate}
+            >
+              Güncelle
+            </Button>
+          </ModalActions>
+        </ModalForm>
       </Modal>
 
       <Modal
         size="xSmall"
+        title="Silmek istediğine emin misin?"
         show={showCreateModal && mode === 'delete'}
         onClose={() => setShowCreateModal(false)}
       >
-        <div className="w-full flex flex-col gap-4">
-          <h3 className="text-2xl font-semibold">
-            Silmek istediğine emin misin?
-          </h3>
+        <ModalForm>
           <p>
-            <strong>"{data.title}"</strong> adlı hediye çarkını silmek
+            <strong>&quot;{data.title}&quot;</strong> adlı hediye çarkını silmek
             üzeresiniz. Bu işlem geri alınamaz.
           </p>
 
-          <Button
-            color="red"
-            loading={loadings.includes('delete')}
-            onClick={handleDelete}
-          >
-            Sil
-          </Button>
-        </div>
+          <ModalActions>
+            <Button
+              color="primaryOutline"
+              onClick={() => setShowCreateModal(false)}
+            >
+              Vazgeç
+            </Button>
+            <Button
+              color="red"
+              loading={loadings.includes('delete')}
+              onClick={handleDelete}
+            >
+              Sil
+            </Button>
+          </ModalActions>
+        </ModalForm>
       </Modal>
     </>
   );

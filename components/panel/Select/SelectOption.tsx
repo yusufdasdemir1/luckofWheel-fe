@@ -16,13 +16,13 @@ const SelectOption = ({ children, className, value }: Props) => {
     <div
       className={classNames(
         'w-full min-h-[30px]',
-        'p-2 box-border',
+        'px-3 py-2 box-border rounded-lg',
         'flex items-center gap-2',
         'cursor-pointer',
         'text-sm',
-        'hover:text-white hover:bg-black',
+        'text-ck-ink hover:bg-primary/10 hover:text-primary',
         {
-          '!text-white !bg-black': value === currentValue,
+          '!text-white !bg-primary': value === currentValue,
           '!text-xs !px-2 !py-1 min-h-[25px]': size === 'small',
         },
         className

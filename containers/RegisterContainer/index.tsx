@@ -1,13 +1,17 @@
 'use client';
-import Button from '@/components/panel/Button';
-import Checkbox from '@/components/panel/Checkbox';
-import Input from '@/components/panel/Input';
-import Textarea from '@/components/panel/Textarea';
+import AuthField, { AuthTextarea, authInputClass } from '@/components/auth/AuthField';
+import AuthShell from '@/components/auth/AuthShell';
+import RadioGroup from '@/components/panel/RadioGroup';
 import { fetchMe, login, register } from '@/services/authService';
 import { useAlertStore } from '@/stores/alertStore';
 import { useAuthStore } from '@/stores/authStore';
+import { WHEEL_MODE_ITEMS, WheelMode } from '@/types/ICompany';
+import { apiErrorMessage } from '@/utils/apiError';
+import { setAuthCookie } from '@/utils/authCookie';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
+import { BiLoaderAlt } from 'react-icons/bi';
 
 const RegisterContainer = () => {
   const router = useRouter();
@@ -24,25 +28,30 @@ const RegisterContainer = () => {
     company_description: '',
     company_phone: '',
     company_email: '',
-    show_before_meeting: false,
-    is_show_wheel: false,
+    wheel_mode: 'before' as WheelMode,
   });
 
-  const handleChangeData = (field: string, value: any) => {
+  const handleChangeData = (field: string, value: string | boolean) => {
     setData((prevData) => ({
       ...prevData,
       [field]: value,
     }));
   };
 
-  const handleRegister = async () => {
+  const notify = (type: 'success' | 'error', content: string) =>
+    addAlert({
+      id: Math.random().toString(36).substring(2, 9),
+      type,
+      title: type === 'error' ? ' Hata' : ' Başarılı',
+      content,
+    });
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (loading) return;
+
     if (data.password !== data.r_password) {
-      return addAlert({
-        id: Math.random().toString(36).substring(2, 9),
-        type: 'error',
-        title: ' Hata',
-        content: 'Şifreler eşleşmiyor.',
-      });
+      return notify('error', 'Şifreler eşleşmiyor.');
     }
 
     setLoading(true);
@@ -51,125 +60,150 @@ const RegisterContainer = () => {
       phone:
         '+90' + data.company_phone.substring(data.company_phone.length - 10),
     });
-    setLoading(false);
 
     if (error) {
-      return addAlert({
-        id: Math.random().toString(36).substring(2, 9),
-        type: 'error',
-        title: ' Hata',
-        content: error.error || 'Kayıt işlemi sırasında bir hata oluştu.',
-      });
+      setLoading(false);
+      return notify(
+        'error',
+        apiErrorMessage(error, 'Kayıt işlemi sırasında bir hata oluştu.')
+      );
     }
 
-    addAlert({
-      id: Math.random().toString(36).substring(2, 9),
-      type: 'success',
-      title: ' Başarılı',
-      content: 'Kayıt işlemi başarılı.',
-    });
+    notify('success', 'Kayıt işlemi başarılı.');
 
-    setLoading(true);
     const [err, loginRes] = await login(data.company_email, data.password);
-    setLoading(false);
 
     if (err) {
+      setLoading(false);
       return router.push('/giris-yap');
     }
 
-    document.cookie = `token=${loginRes.tokens.access}; path=/`;
+    setAuthCookie(loginRes.tokens.access);
 
     const [userDataErr, userData] = await fetchMe();
 
-    if (userDataErr) return;
+    if (userDataErr) {
+      setLoading(false);
+      return;
+    }
 
     setUser(userData);
     router.push('/panel');
   };
 
   return (
-    <div className="flex flex-col gap-4 container max-w-[450px] pb-24 px-6 mx-auto box-border mt-8">
-      <h2 className="text-3xl font-semibold">Kayıt Ol</h2>
-
-      <Input
-        label="İsim"
-        value={data.name}
-        onChange={(e) => handleChangeData('name', e.target.value)}
-      />
-      <Input
-        label="Soyisim"
-        value={data.surname}
-        onChange={(e) => handleChangeData('surname', e.target.value)}
-      />
-      <Input
-        label="Şifre"
-        type="password"
-        value={data.password}
-        onChange={(e) => handleChangeData('password', e.target.value)}
-      />
-      <Input
-        label="Şifre"
-        type="password"
-        value={data.r_password}
-        onChange={(e) => handleChangeData('r_password', e.target.value)}
-      />
-
-      <hr className="w-full h-[1px] my-4 border-slate-300" />
-
-      <Input
-        label="Firma Adı"
-        value={data.company_title}
-        onChange={(e) => handleChangeData('company_title', e.target.value)}
-      />
-
-      <div className="flex flex-col gap-1">
-        <span className="text-sm text-black/90">Telefon</span>
-
-        <div className="flex items-end">
-          <div className="w-[50px] min-w-[50px] h-[45px] flex items-center justify-center bg-white border border-[#AEAEAE] text-sm font-medium rounded-l-md">
-            +90
-          </div>
-          <Input
-            value={data.company_phone}
-            onChange={(e) => handleChangeData('company_phone', e.target.value)}
-            className="!border-l-0 !rounded-l-none"
+    <AuthShell
+      wide
+      title="Salonunu oluştur"
+      subtitle="Salon bilgilerini gir, panelini hemen kullanmaya başla."
+      footer={
+        <>
+          Zaten hesabın var mı?{' '}
+          <Link
+            href="/giris-yap"
+            className="font-bold text-ck-brand no-underline hover:underline"
+          >
+            Giriş yap
+          </Link>
+        </>
+      }
+    >
+      <form onSubmit={handleRegister} className="flex flex-col gap-5">
+        <div className="grid gap-5 sm:grid-cols-2">
+          <AuthField
+            label="İsim"
+            value={data.name}
+            onChange={(e) => handleChangeData('name', e.target.value)}
+            required
+          />
+          <AuthField
+            label="Soyisim"
+            value={data.surname}
+            onChange={(e) => handleChangeData('surname', e.target.value)}
+            required
+          />
+          <AuthField
+            label="Şifre"
+            type="password"
+            autoComplete="new-password"
+            value={data.password}
+            onChange={(e) => handleChangeData('password', e.target.value)}
+            required
+          />
+          <AuthField
+            label="Şifre (tekrar)"
+            type="password"
+            autoComplete="new-password"
+            value={data.r_password}
+            onChange={(e) => handleChangeData('r_password', e.target.value)}
+            required
           />
         </div>
-      </div>
 
-      <Input
-        label="Firma E-Posta"
-        value={data.company_email}
-        onChange={(e) => handleChangeData('company_email', e.target.value)}
-      />
+        <hr className="w-full h-px my-1 border-0 bg-ck-line" />
 
-      <Textarea
-        label="Firma Açıklaması"
-        value={data.company_description}
-        onChange={(e) =>
-          handleChangeData('company_description', e.target.value)
-        }
-      />
-      <Checkbox
-        title="Çarkı Göster"
-        value={data.is_show_wheel}
-        onChange={(e) => handleChangeData('is_show_wheel', e)}
-      />
-      <Checkbox
-        title="Çarkı Randevudan Önce Göster"
-        value={data.show_before_meeting}
-        onChange={(e) => handleChangeData('show_before_meeting', e)}
-      />
+        <AuthField
+          label="Firma adı"
+          value={data.company_title}
+          onChange={(e) => handleChangeData('company_title', e.target.value)}
+          required
+        />
 
-      <Button
-        color="green"
-        className="ml-auto"
-        loading={loading}
-        onClick={handleRegister}
-      >
-        Kayıt Ol
-      </Button>
-    </div>
+        <div className="grid gap-5 sm:grid-cols-2">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-ck-ink">Telefon</label>
+            <div className="flex">
+              <div className="w-14 min-w-14 h-12 flex items-center justify-center rounded-l-xl border border-r-0 border-ck-input bg-ck-surface text-sm font-medium text-ck-muted">
+                +90
+              </div>
+              <input
+                type="tel"
+                inputMode="tel"
+                value={data.company_phone}
+                onChange={(e) =>
+                  handleChangeData('company_phone', e.target.value)
+                }
+                className={`${authInputClass} h-12 !rounded-l-none min-w-0`}
+                required
+              />
+            </div>
+          </div>
+
+          <AuthField
+            label="Firma e-posta"
+            type="email"
+            value={data.company_email}
+            onChange={(e) => handleChangeData('company_email', e.target.value)}
+            required
+          />
+        </div>
+
+        <AuthTextarea
+          label="Firma açıklaması"
+          value={data.company_description}
+          onChange={(e) =>
+            handleChangeData('company_description', e.target.value)
+          }
+        />
+
+        <RadioGroup
+          title="Çark"
+          vertical
+          value={data.wheel_mode}
+          items={WHEEL_MODE_ITEMS}
+          onChange={(v) => handleChangeData('wheel_mode', v)}
+        />
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="ck-btn mt-2 h-12 w-full rounded-xl bg-ck-brand text-white font-bold cursor-pointer border-0 flex items-center justify-center gap-2 hover:bg-ck-brand-dark hover:shadow-[0_12px_26px_rgba(142,19,48,.28)] disabled:opacity-70 disabled:cursor-not-allowed"
+        >
+          {loading && <BiLoaderAlt size={18} className="animate-spin" />}
+          Kayıt Ol
+        </button>
+      </form>
+    </AuthShell>
   );
 };
 

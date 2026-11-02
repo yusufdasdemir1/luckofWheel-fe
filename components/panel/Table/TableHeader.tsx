@@ -47,7 +47,7 @@ const TableHeader = () => {
               placeholder="Search..."
               value={search || ''}
               className="rounded-xl border-purple pl-10"
-              onChange={console.log}
+              onChange={() => undefined}
             />
           </div>
         )}

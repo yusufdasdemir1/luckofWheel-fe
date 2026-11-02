@@ -35,9 +35,9 @@ export const updateGiftStatus = (id: number, data = {}) => {
     .catch((error) => [error?.response?.data, null]);
 };
 
-export const fetchSpinHistory = () => {
+export const fetchSpinHistory = (params: Record<string, string> = {}) => {
   return axios
-    .get('/spin_history')
+    .get('/spin_history', { params })
     .then((res) => [null, res.data])
     .catch((error) => [error?.response?.data, null]);
 };
@@ -45,6 +45,20 @@ export const fetchSpinHistory = () => {
 export const deleteEarnedGift = (id: number) => {
   return axios
     .delete(`/company/earned-wins/${id}`)
+    .then((res) => [null, res.data])
+    .catch((error) => [error?.response?.data, null]);
+};
+
+export const fetchWinStatistics = () => {
+  return axios
+    .get('/spin_history/statistics')
+    .then((res) => [null, res.data])
+    .catch((error) => [error?.response?.data, null]);
+};
+
+export const bulkDeleteEarnedGifts = (ids: number[]) => {
+  return axios
+    .post('/company/earned-wins/bulk-delete', { ids })
     .then((res) => [null, res.data])
     .catch((error) => [error?.response?.data, null]);
 };

@@ -1,0 +1,25 @@
+node_modules
+.next
+out
+build
+coverage
+.git
+.gitignore
+.idea
+.vscode
+Dockerfile
+.dockerignore
+npm-debug.log*
+yarn-debug.log*
+.pnpm-debug.log*
+*.tsbuildinfo
+*.pem
+.DS_Store
+
+# yerel env dosyaları imaja girmesin; değerler build arg ile verilir
+.env
+.env.*
+!.env.example
+
+# pnpm kullanılıyor
+package-lock.json

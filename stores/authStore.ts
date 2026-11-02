@@ -1,4 +1,5 @@
 import IUser from '@/types/IUser';
+import { clearAuthCookie } from '@/utils/authCookie';
 import { create } from 'zustand';
 
 type Store = {
@@ -13,8 +14,11 @@ export const useAuthStore = create<Store>()((set) => ({
   setUser: (user) => set((state) => ({ ...state, user })),
 
   logout: () => {
-    document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
-    window.location.href = '/';
+    // Backend'de refresh token geçersiz kılma ucu var (/company/logout) ama istemci
+    // refresh token tutmuyor; bu yüzden token sadece burada silinir. Bkz. güvenlik raporu 3.6.
+    clearAuthCookie();
     set((state) => ({ ...state, user: undefined }));
+    // tam sayfa yenileme: bellekteki tüm durum (store, önbellek) sıfırlanır
+    window.location.href = '/';
   },
 }));

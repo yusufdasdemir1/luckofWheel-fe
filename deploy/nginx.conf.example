@@ -1,0 +1,69 @@
+# Örnek Nginx yapılandırması (frontend + API). Kendi sunucundaki dosyayla karşılaştırıp uyarla;
+# domain, sertifika yolu ve portları kendi ortamına göre değiştir.
+#
+# Sorumluluk dağılımı:
+#   - TLS, HTTP->HTTPS yönlendirmesi ve HSTS burada (uygulama arkada http ile çalışır).
+#   - CSP, nosniff, Referrer-Policy, Permissions-Policy, X-Frame-Options Next.js uygulamasından
+#     gelir (next.config.ts). Aynı header'ları burada TEKRAR ekleme, çift header olur.
+
+# nginx sürüm bilgisi hata sayfalarında ve header'da görünmesin
+server_tokens off;
+
+# --- HTTP -> HTTPS ---
+server {
+    listen 80;
+    listen [::]:80;
+    server_name cevirkazan360.com www.cevirkazan360.com api.cevirkazan360.com;
+    return 301 https://$host$request_uri;
+}
+
+# --- Frontend (Next.js, docker: cevirkazan, 3000) ---
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    http2 on;
+    server_name cevirkazan360.com www.cevirkazan360.com;
+
+    ssl_certificate     /etc/letsencrypt/live/cevirkazan360.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/cevirkazan360.com/privkey.pem;
+    ssl_protocols       TLSv1.2 TLSv1.3;
+
+    # HSTS: sertifikanın sorunsuz yenilendiğinden emin olduktan sonra preload ekleme
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+# --- API (Django, docker: cevirkazan-be, 8000) ---
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    http2 on;
+    server_name api.cevirkazan360.com;
+
+    ssl_certificate     /etc/letsencrypt/live/cevirkazan360.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/cevirkazan360.com/privkey.pem;
+    ssl_protocols       TLSv1.2 TLSv1.3;
+
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+    add_header X-Content-Type-Options "nosniff" always;
+
+    # fotoğraf yükleme sınırı 5 MB; form alanlarına pay bırakılır
+    client_max_body_size 6m;
+
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        # Django SECURE_PROXY_SSL_HEADER ve oran sınırlama bu header'lara güvenir
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}

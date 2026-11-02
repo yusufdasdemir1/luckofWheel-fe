@@ -30,8 +30,13 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env.local
+# env: tek dosya .env (şablon: .env.example)
+.env
+.env.*
+!.env.example
+
+# pnpm kullanılıyor (pnpm-lock.yaml); npm'in artık lock dosyası takip edilmesin
+package-lock.json
 
 # vercel
 .vercel

@@ -9,16 +9,16 @@ const cn = classnames.bind({
   medium: 'px-4 min-h-[48px]',
   large: 'px-8 min-h-[60px] text-lg',
 
-  primary: 'bg-primary border-primary hover:opacity-80 text-white',
+  primary: 'bg-primary border-primary hover:bg-ck-brand-dark hover:border-ck-brand-dark text-white',
   primaryOutline:
     ' bg-white border-primary hover:bg-primary hover:text-white text-primary',
   black: 'bg-black border-black hover:opacity-80 text-white',
   white: 'bg-white border-transparent hover:bg-slate-200 text-black',
-  red: 'bg-red-400 border-red-400 hover:opacity-80 text-white',
-  sky: 'bg-sky-400 border-sky-400 hover:opacity-80 text-white',
+  red: 'bg-red-500 border-red-500 hover:bg-red-600 hover:border-red-600 text-white',
+  sky: 'bg-ck-night border-ck-night hover:bg-ck-night-soft hover:border-ck-night-soft text-white',
   orange: 'bg-orange-400 border-orange-400 hover:opacity-80 text-white',
-  green: 'bg-green-400 border-green-400 hover:opacity-80 text-white',
-  blue: 'bg-blue-400 border-blue-400 hover:opacity-80 text-white',
+  green: 'bg-emerald-600 border-emerald-600 hover:bg-emerald-700 hover:border-emerald-700 text-white',
+  blue: 'bg-ck-night border-ck-night hover:bg-ck-night-soft hover:border-ck-night-soft text-white',
   yellow: 'bg-yellow-400 border-yellow-400 hover:opacity-80 text-white',
 });
 
@@ -52,7 +52,7 @@ const Button = ({
     <button
       disabled={disabled || loading}
       className={cn(
-        'w-fit rounded-lg cursor-pointer',
+        'w-fit rounded-xl cursor-pointer',
         'flex items-center justify-center gap-2',
         'text-center',
         'transition-all duration-200',

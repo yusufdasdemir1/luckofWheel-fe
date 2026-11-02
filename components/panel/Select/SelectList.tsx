@@ -33,10 +33,10 @@ const SelectList = ({ children, className }: Props) => {
     <div
       ref={listRef}
       className={cn(
-        'absolute top-full left-0 z-20 mt-1',
+        'absolute top-full left-0 z-20 mt-1.5 p-1',
         'w-full max-h-[250px] overflow-y-auto',
         'bg-white',
-        'rounded-md box-border border border-[#AEAEAE]',
+        'rounded-xl box-border border border-slate-200 shadow-lg',
         'flex flex-col gap-0.5',
         className
       )}
